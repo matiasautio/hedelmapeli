@@ -83,10 +83,12 @@
 
       async function roll() {
         // to do: change the slot variables to contain different icons
+        // atm all spools use slots_0
         const slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
         const slots_1 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
         const slots_2 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
 
+        // Divs for each of the three spools
         const spool_0 = document.getElementById("one");
         const spool_1 = document.getElementById("two");
         const spool_2 = document.getElementById("three");
@@ -105,6 +107,7 @@
           money = money - playCost;
           document.getElementById("money").innerHTML = money;
 
+          // Calcute a random value for each spool to display
           var one =
             1 + Math.floor(Math.random() * Math.floor(slots_0.length - 1));
           var two =
@@ -116,16 +119,15 @@
           let sleepTime = 100;
 
           for (let i = 1; i < slots_0.length + one; i++) {
-            //coinSound.play();
             await new Promise(r => setTimeout(r, sleepTime));
             spool_0.innerHTML = slots_0[a];
             a++;
             if (a == slots_0.length) {
               a = 1;
             }
-            //coinSound.pause();
           }
           // by adding this we get the probability of a die roll when the slots array length is 6
+          // it also means that iterating over the array is just for show
           document.getElementById("one").innerHTML = slots_0[one];
 
           let b = 1;
@@ -142,7 +144,6 @@
 
           let c = 1;
           for (let i = 0; i < slots_0.length + three; i++) {
-            //coinSound.play();
             await new Promise(r => setTimeout(r, sleepTime));
             spool_2.innerHTML = slots_0[c];
             c++;
@@ -150,7 +151,6 @@
               c = 1;
             }
             if (i >= (slots_0.length + three) / 2) {
-              //sleepTime += 75;
               sleepTime = sleepTime * 1.4;
             }
           }
@@ -180,7 +180,7 @@
             document.getElementById("money").innerHTML = money;
             console.log("1");
           }
-          //document.getElementById("three").innerHTML = slots_0[three];
+          document.getElementById("three").innerHTML = slots_0[three];
         }
         document.getElementById("playBtn").onclick = function() {
           roll();
