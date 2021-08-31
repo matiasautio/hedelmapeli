@@ -18,6 +18,9 @@
         width: 10%;
         text-align: center;
       }
+      .checkBox {
+        margin: 15px;
+      }
       @media screen and (max-width: 1200px) {
         body {
           font-size: 2em;
@@ -32,6 +35,14 @@
         }
         button {
           font-size: 1.25em;
+        }
+        .checkBox {
+          margin: 0x;
+          padding: 0x;
+          font-size: 10em;
+          width: 100vw;
+          height: auto;
+          text-align: center;
         }
       }
     </style>
@@ -78,11 +89,19 @@
       </button-->
     </div>
     <!-- Checkboxes for features -->
-    <div class="wrapper">
+    <div style="text-align: center">
       <p>Choose slot features:</p>
-      <div>
-        <input type="checkbox" id="scales" name="scales" checked />
-        <label for="scales">Scales</label>
+      <div class="wrapper">
+        <div class="checkBox">
+          <input type="checkbox" id="audio" name="audio" checked />
+          <label for="audio">Audio</label>
+        </div>
+        <input type="checkbox" class="checkBox" id="id1" name="name1" checked />
+        <label for="scales">1</label>
+        <input type="checkbox" class="checkBox" id="id2" name="name2" checked />
+        <label for="scales">2</label>
+        <input type="checkbox" class="checkBox" id="id3" name="name3" checked />
+        <label for="scales">3</label>
       </div>
       <!--div
         style="display: block;
