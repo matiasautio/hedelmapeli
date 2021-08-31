@@ -80,7 +80,8 @@
     </div-->
     <script>
       let coinSound = document.getElementById("coinSound");
-
+      
+      // async because await is used to add delay between icon changes in the spools
       async function roll() {
         // to do: change the slot variables to contain different icons
         // atm all spools use slots_0
@@ -132,7 +133,6 @@
 
           let b = 1;
           for (let i = 1; i < slots_0.length + two; i++) {
-            //coinSound.play();
             await new Promise(r => setTimeout(r, sleepTime));
             spool_1.innerHTML = slots_0[b];
             b++;
@@ -154,7 +154,8 @@
               sleepTime = sleepTime * 1.4;
             }
           }
-
+        
+          // prints a neat representation of the results to the console
           var zero = spool_0.innerHTML;
           var uno = spool_1.innerHTML;
           var dos = spool_2.innerHTML;
@@ -180,7 +181,6 @@
             document.getElementById("money").innerHTML = money;
             console.log("1");
           }
-          document.getElementById("three").innerHTML = slots_0[three];
         }
         document.getElementById("playBtn").onclick = function() {
           roll();
