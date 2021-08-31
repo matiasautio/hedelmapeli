@@ -18,8 +18,12 @@
         width: 10%;
         text-align: center;
       }
-      .checkBox {
-        margin: 15px;
+      checkbox {
+        margin: 5px;
+        font-size: 2em;
+      }
+      label {
+        font-size: 14;
       }
       @media screen and (max-width: 1200px) {
         body {
@@ -36,13 +40,15 @@
         button {
           font-size: 1.25em;
         }
-        .checkBox {
+        checkbox {
           margin: 0x;
           padding: 0x;
-          font-size: 10em;
-          width: 100vw;
+          width: 10vw;
           height: auto;
           text-align: center;
+        }
+        label {
+          font-size: 40;
         }
       }
     </style>
@@ -89,6 +95,7 @@
       </button-->
     </div>
     <!-- Checkboxes for features -->
+    <!-- Checkboxes not implemented in code -->
     <div style="text-align: center">
       <p>Choose slot features:</p>
       <div class="wrapper">
@@ -96,12 +103,36 @@
           <input type="checkbox" id="audio" name="audio" checked />
           <label for="audio">Audio</label>
         </div>
-        <input type="checkbox" class="checkBox" id="id1" name="name1" checked />
-        <label for="scales">1</label>
-        <input type="checkbox" class="checkBox" id="id2" name="name2" checked />
-        <label for="scales">2</label>
-        <input type="checkbox" class="checkBox" id="id3" name="name3" checked />
-        <label for="scales">3</label>
+        <div class="checkBox">
+          <input
+            type="checkbox"
+            class="checkBox"
+            id="id1"
+            name="name1"
+            checked
+          />
+          <label for="scales">1</label>
+        </div>
+        <div class="checkBox">
+          <input
+            type="checkbox"
+            class="checkBox"
+            id="id2"
+            name="name2"
+            checked
+          />
+          <label for="scales">2</label>
+        </div>
+        <div class="checkBox">
+          <input
+            type="checkbox"
+            class="checkBox"
+            id="id3"
+            name="name3"
+            checked
+          />
+          <label for="scales">3</label>
+        </div>
       </div>
       <!--div
         style="display: block;
