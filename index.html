@@ -84,6 +84,12 @@
         🍍
       </div>
     </div>
+    <div
+      id="winMessage"
+      style="display:none; transform: rotate(45deg); text-align: center;"
+    >
+      NICE
+    </div>
     <br />
     <div style="text-align: center">
       <button onclick="roll()" style="padding: 10;" id="playBtn">pelaa</button>
@@ -161,8 +167,6 @@
     <div style="text-align: center" id="debt">
       0
     </div-->
-
-    
 
     <script>
       let coinSound = document.getElementById("coinSound");
@@ -368,14 +372,10 @@
 
       function changeSplash(checkboxElement) {
         if (!checkboxElement.checked) {
-          makeSplash();
+          document.getElementById("winMessage").style.display = "none";
         } else if (checkboxElement.checked) {
-          makeSplash();
+          document.getElementById("winMessage").style.display = "block";
         }
-      }
-
-      function makeSplash() {
-        alert("NICE");
       }
     </script>
 
