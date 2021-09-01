@@ -126,6 +126,7 @@
             class="checkBox"
             id="graphicsCheckbox"
             name="graphicsCheckbox"
+                 
             checked
           />
           <label for="graphicsCheckbox">Graphics</label>
@@ -162,11 +163,13 @@
     <script>
       let coinSound = document.getElementById("coinSound");
 
+      var slots_0 = ["null", "A", "K", "Q", "J", "10", "9"];
+      
       // async because await is used to add delay between icon changes in the spools
       async function roll() {
         // to do: change the slot variables to contain different icons
         // atm all spools use slots_0
-        const slots_0 = ["null", "A", "K", "Q", "J", "10", "9"];
+        // const slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
         const slots_1 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
         const slots_2 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
 
@@ -337,6 +340,20 @@
         } else {
           document.body.style.filter = 'grayscale(100%)';
         }
+      }
+      
+      // Use fruit symbols on reels if checkbox is checked
+      // and use card symbols if unchecked
+      function changeReelSymbols(checkboxElement) {
+        if (!checkboxElement.checked) {
+          toggleCardSymbols();
+        } else if (checkboxElement.checked) {
+          toggleFruitSymbols();
+        }
+      }
+      
+      function toggleCardSymbols() {
+        slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
       }
       
     </script>
