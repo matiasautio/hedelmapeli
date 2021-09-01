@@ -135,12 +135,12 @@
           <input
             type="checkbox"
             class="checkBox"
-            id="shakeCheckbox"
-            name="shakeCheckbox"
-            onchange="quake()"
+            id="splashCheckbox"
+            name="splashCheckbox"
+            onchange="changeSplash(this)"
             checked
           />
-          <label for="shakeCheckbox">Shake!</label>
+          <label for="splashCheckbox">Splash</label>
         </div>
       </div>
       <!--div
@@ -161,6 +161,9 @@
     <div style="text-align: center" id="debt">
       0
     </div-->
+
+    
+
     <script>
       let coinSound = document.getElementById("coinSound");
 
@@ -361,6 +364,18 @@
       // Use fruit symbols
       function toggleFruitSymbols() {
         slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
+      }
+
+      function changeSplash(checkboxElement) {
+        if (!checkboxElement.checked) {
+          makeSplash();
+        } else if (checkboxElement.checked) {
+          makeSplash();
+        }
+      }
+
+      function makeSplash() {
+        alert("NICE");
       }
     </script>
 
