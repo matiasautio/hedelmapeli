@@ -104,8 +104,8 @@
             type="checkbox"
             id="audio"
             name="audio"
+            onchange="muteAudio(this)"
             checked
-            onchange="muteAudio2(this)"
           />
           <label for="audio">Audio</label>
         </div>
@@ -284,35 +284,38 @@
         console.log("stop pressing play");
       }
 
-      function muteAudio() {
-        var audio = document.getElementById("coinSound");
-        var audioBtn = document.getElementById("muteAudioBtn");
-        if (audioBtn.innerHTML === "🔊") {
-          audioBtn.innerHTML = "🔇";
-        } else {
-          audioBtn.innerHTML = "🔊";
-        }
-        audio.muted = !audio.muted;
-      }
+      // function muteAudio() {
+      //   var audio = document.getElementById("coinSound");
+      //   var audioBtn = document.getElementById("muteAudioBtn");
+      //   if (audioBtn.innerHTML === "🔊") {
+      //     audioBtn.innerHTML = "🔇";
+      //   } else {
+      //     audioBtn.innerHTML = "🔊";
+      //   }
+      //   audio.muted = !audio.muted;
+      // }
 
-      function muteAudio2(checkboxElement) {
-        if (checkboxElement.checked) {
-          alert("hi");
+      // Mute page if checkbox is checked
+      // and unmute if unchecked
+      function muteAudio(checkboxElement) {
+        if (!checkboxElement.checked) {
+          mutePage(true);
+        } else if (checkboxElement.checked) {
+          mutePage(false);
         }
       }
 
       // Mute a singular HTML5 element
-      function muteMe(elem) {
-        elem.muted = true;
-        elem.pause();
+      function muteMe(elem, isMute) {
+        elem.muted = isMute;
       }
 
       // Try to mute all video and audio elements on the page
-      function mutePage() {
+      function mutePage(isMute) {
         var elems = document.querySelectorAll("video, audio");
 
         [].forEach.call(elems, function(elem) {
-          muteMe(elem);
+          muteMe(elem, isMute);
         });
       }
     </script>
