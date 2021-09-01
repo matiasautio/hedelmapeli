@@ -370,6 +370,9 @@
         slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
       }
 
+      // Show win message if checkbox is checked
+      // and do not show if unchecked
+      // TODO: add it only to wins and make it disappear after some time
       function changeSplash(checkboxElement) {
         if (!checkboxElement.checked) {
           document.getElementById("winMessage").style.display = "none";
