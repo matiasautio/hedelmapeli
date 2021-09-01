@@ -100,7 +100,13 @@
       <p>Choose slot features:</p>
       <div class="wrapper">
         <div class="checkBox">
-          <input type="checkbox" id="audio" name="audio" checked />
+          <input
+            type="checkbox"
+            id="audio"
+            name="audio"
+            checked
+            onchange="muteAudio2(this)"
+          />
           <label for="audio">Audio</label>
         </div>
         <div class="checkBox">
@@ -287,6 +293,27 @@
           audioBtn.innerHTML = "🔊";
         }
         audio.muted = !audio.muted;
+      }
+
+      function muteAudio2(checkboxElement) {
+        if (checkboxElement.checked) {
+          alert("hi");
+        }
+      }
+
+      // Mute a singular HTML5 element
+      function muteMe(elem) {
+        elem.muted = true;
+        elem.pause();
+      }
+
+      // Try to mute all video and audio elements on the page
+      function mutePage() {
+        var elems = document.querySelectorAll("video, audio");
+
+        [].forEach.call(elems, function(elem) {
+          muteMe(elem);
+        });
       }
     </script>
 
