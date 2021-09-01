@@ -21,7 +21,7 @@ Activate/disable ominaisuuksia, kuten:
 - voittoääni
 - [x] harmaa-filtteri koko pelille
 - symbolien lisäys
-- ikonit hedelmistä kirjaimiksi
+- [x] ikonit hedelmistä kirjaimiksi
 - panostustasot
 - näytä ylä- ja alapuolella ohimenneet symbolit
 - UI tekstistä värikkäämmäksi

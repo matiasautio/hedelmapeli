@@ -126,7 +126,7 @@
             class="checkBox"
             id="graphicsCheckbox"
             name="graphicsCheckbox"
-                 
+            onchange="changeReelSymbols(this)"
             checked
           />
           <label for="graphicsCheckbox">Graphics</label>
@@ -135,11 +135,12 @@
           <input
             type="checkbox"
             class="checkBox"
-            id="id3"
-            name="name3"
+            id="shakeCheckbox"
+            name="shakeCheckbox"
+            onchange="quake()"
             checked
           />
-          <label for="scales">3</label>
+          <label for="shakeCheckbox">Shake!</label>
         </div>
       </div>
       <!--div
@@ -163,8 +164,8 @@
     <script>
       let coinSound = document.getElementById("coinSound");
 
-      var slots_0 = ["null", "A", "K", "Q", "J", "10", "9"];
-      
+      var slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
+
       // async because await is used to add delay between icon changes in the spools
       async function roll() {
         // to do: change the slot variables to contain different icons
@@ -322,7 +323,7 @@
           muteMe(elem, isMute);
         });
       }
-      
+
       // Use colors on page if checkbox is checked
       // and use grayscale if unchecked
       function changePageColor(checkboxElement) {
@@ -332,16 +333,16 @@
           toggleGreyscaleFilter();
         }
       }
-      
+
       // Change colors to greys
       function toggleGreyscaleFilter() {
-        if (document.body.style.filter == 'grayscale(100%)') {
-          document.body.style.filter = '';
+        if (document.body.style.filter == "grayscale(100%)") {
+          document.body.style.filter = "";
         } else {
-          document.body.style.filter = 'grayscale(100%)';
+          document.body.style.filter = "grayscale(100%)";
         }
       }
-      
+
       // Use fruit symbols on reels if checkbox is checked
       // and use card symbols if unchecked
       function changeReelSymbols(checkboxElement) {
@@ -351,11 +352,16 @@
           toggleFruitSymbols();
         }
       }
-      
+
+      // Use card symbols
       function toggleCardSymbols() {
+        slots_0 = ["null", "A", "K", "Q", "J", "10", "9"];
+      }
+
+      // Use fruit symbols
+      function toggleFruitSymbols() {
         slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
       }
-      
     </script>
 
     <script>
