@@ -124,11 +124,11 @@
           <input
             type="checkbox"
             class="checkBox"
-            id="id2"
-            name="name2"
+            id="graphicsCheckbox"
+            name="graphicsCheckbox"
             checked
           />
-          <label for="scales">2</label>
+          <label for="graphicsCheckbox">Graphics</label>
         </div>
         <div class="checkBox">
           <input
@@ -166,7 +166,7 @@
       async function roll() {
         // to do: change the slot variables to contain different icons
         // atm all spools use slots_0
-        const slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
+        const slots_0 = ["null", "A", "K", "Q", "J", "10", "9"];
         const slots_1 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
         const slots_2 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
 
@@ -324,15 +324,19 @@
       // and use grayscale if unchecked
       function changePageColor(checkboxElement) {
         if (!checkboxElement.checked) {
-          turnColors();
+          toggleGreyscaleFilter();
         } else if (checkboxElement.checked) {
-          turnColors();
+          toggleGreyscaleFilter();
         }
       }
       
-      // Change colors
-      function turnColors() {
-        document.body.style.filter = 'grayscale(100%)';
+      // Change colors to greys
+      function toggleGreyscaleFilter() {
+        if (document.body.style.filter == 'grayscale(100%)') {
+          document.body.style.filter = '';
+        } else {
+          document.body.style.filter = 'grayscale(100%)';
+        }
       }
       
     </script>

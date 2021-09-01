@@ -19,7 +19,7 @@ Activate/disable ominaisuuksia, kuten:
 - slow roll/tease
 - ruudun heilutus voittaessa
 - voittoääni
-- harmaa-filtteri koko pelille
+- [x] harmaa-filtteri koko pelille
 - symbolien lisäys
 - ikonit hedelmistä kirjaimiksi
 - panostustasot
