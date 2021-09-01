@@ -113,11 +113,12 @@
           <input
             type="checkbox"
             class="checkBox"
-            id="id1"
-            name="name1"
+            id="colorCheckbox"
+            name="colorCheckbox"
+            onchange="changePageColor(this)"
             checked
           />
-          <label for="scales">1</label>
+          <label for="colorCheckbox">Colors</label>
         </div>
         <div class="checkBox">
           <input
@@ -318,6 +319,22 @@
           muteMe(elem, isMute);
         });
       }
+      
+      // Use colors on page if checkbox is checked
+      // and use grayscale if unchecked
+      function changePageColor(checkboxElement) {
+        if (!checkboxElement.checked) {
+          turnColors();
+        } else if (checkboxElement.checked) {
+          turnColors();
+        }
+      }
+      
+      // Change colors
+      function turnColors() {
+        document.body.style.filter = 'grayscale(100%)';
+      }
+      
     </script>
 
     <script>
