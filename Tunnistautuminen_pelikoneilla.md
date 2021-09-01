@@ -26,6 +26,8 @@ Activate/disable ominaisuuksia, kuten:
 - näytä ylä- ja alapuolella ohimenneet symbolit
 - UI tekstistä värikkäämmäksi
 - Taustakuva
+- max bet nappi
 
 # Extra-ideoita
-
+- graafi missä näkyy saldon kehitys
+- lisää saldoa nappi
