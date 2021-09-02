@@ -143,7 +143,7 @@
             class="checkBox"
             id="splashCheckbox"
             name="splashCheckbox"
-            onchange="changeSplash(this)"
+            onchange="toggleSplash(this)"
             checked
           />
           <label for="splashCheckbox">Splash</label>
@@ -189,6 +189,8 @@
         let money = document.getElementById("money").innerHTML;
         let playCost = 1;
         money = parseFloat(money);
+
+        let canDisplaySplash = true;
 
         if (money >= 1) {
           document.getElementById("coinSound").loop = true;
@@ -268,18 +270,22 @@
             money = money + 3;
             document.getElementById("money").innerHTML = money;
             console.log("3");
+            displaySplash();
           } else if (spool_0.innerHTML === spool_1.innerHTML) {
             money = money + 1;
             document.getElementById("money").innerHTML = money;
             console.log("1");
+            displaySplash();
           } else if (spool_0.innerHTML === spool_2.innerHTML) {
             money = money + 2;
             document.getElementById("money").innerHTML = money;
             console.log("2");
+            displaySplash();
           } else if (spool_1.innerHTML === spool_2.innerHTML) {
             money = money + 1;
             document.getElementById("money").innerHTML = money;
             console.log("1");
+            displaySplash();
           }
         }
         document.getElementById("playBtn").onclick = function() {
@@ -373,13 +379,25 @@
       // Show win message if checkbox is checked
       // and do not show if unchecked
       // TODO: add it only to wins and make it disappear after some time
-      function changeSplash(checkboxElement) {
+      function toggelSplash(checkboxElement) {
         if (!checkboxElement.checked) {
-          document.getElementById("winMessage").style.display = "none";
+          //document.getElementById("winMessage").style.display = "none";
+          global canDisplaySplash = false;
         } else if (checkboxElement.checked) {
-          document.getElementById("winMessage").style.display = "block";
+          //document.getElementById("winMessage").style.display = "block";
+          global canDisplaySplash = true;
         }
       }
+
+      // Displays splash when a win is made
+      function displaySplash() {
+        if(canDisplaySplash) {
+          document.getElementById("winMessage").style.display = "block";
+          sleep(2500);
+          document.getElementById("winMessage").style.display = "none";
+        }
+      }
+
     </script>
 
     <script>
