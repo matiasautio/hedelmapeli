@@ -80,6 +80,24 @@
         NICE
       </p>
     </div>
+      <div
+      id="jackpotMessage"
+      style="display: none; position: absolute; z-index: 1; width: 100vw;"
+    >
+      <p
+        style="
+          transform: rotate(0deg);
+          text-align: center;
+          font-size: 14em;
+          color: #f03a17;
+          margin-top: -25px;
+          -webkit-text-stroke-width: 5px;
+          -webkit-text-stroke-color: black;
+        "
+      >
+        JACKPOT
+      </p>
+    </div>
     <div class="wrapper">
       <div id="one">🍓</div>
       <div id="two">🍒</div>
@@ -87,7 +105,10 @@
     </div>
     <br />
     <div style="text-align: center">
-      <button onclick="spin()" style="padding: 10" id="playBtn">pelaa</button>
+      <button onclick="spin()" style="padding: 10" id="playBtn">SPIN</button>
+    </div>
+    <div style="text-align: center">
+      <button onclick="jackpot()" style="padding: 10; display: none" id="playBtn">debug jackpot</button>
     </div>
     <div style="text-align: center">
       <p>Choose slot features:</p>

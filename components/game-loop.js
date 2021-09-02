@@ -125,12 +125,38 @@ async function spin() {
   let prize = findHighestPrizeForSpin(prizeMatch);
   money = money + prize;
   document.getElementById("money").innerHTML = money;
-  if (prize > 0) {
+  if (prize != 0 && prize <= 2) {
     displaySplash();
     playSplashSound();
+  }
+  else if (prize == 3) {
+    displayJackpotSplash();
+    playJackpotSplashSound();
   }
 
   document.getElementById("playBtn").onclick = function () {
     spin();
   };
+}
+
+function jackpot() {
+  const spool_0 = document.getElementById("one");
+  const spool_1 = document.getElementById("two");
+  const spool_2 = document.getElementById("three");
+  spool_0.innerHTML = slots_0[1];
+  spool_1.innerHTML = slots_0[1];
+  spool_2.innerHTML = slots_0[1];
+
+  let spinLine = [spool_0.innerHTML, spool_1.innerHTML, spool_2.innerHTML];
+  let prizeMatch = checkWinningLines(spinLine);
+  let prize = findHighestPrizeForSpin(prizeMatch);
+  
+  if (prize != 0 && prize <= 2) {
+    displaySplash();
+    playSplashSound();
+  }
+  else if (prize == 3) {
+    displayJackpotSplash();
+    playJackpotSplashSound();
+  }
 }

@@ -77,10 +77,16 @@ function toggelSplash(checkboxElement) {
 
 // Displays splash when a win is made
 async function displaySplash() {
-  console.log("display splash called");
   if (canDisplaySplash) {
     document.getElementById("winMessage").style.display = "block";
     await new Promise((r) => setTimeout(r, 2500));
     document.getElementById("winMessage").style.display = "none";
+  }
+}
+async function displayJackpotSplash() {
+  if (canDisplaySplash) {
+    document.getElementById("jackpotMessage").style.display = "block";
+    await new Promise((r) => setTimeout(r, 2500));
+    document.getElementById("jackpotMessage").style.display = "none";
   }
 }
