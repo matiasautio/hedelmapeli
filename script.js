@@ -27,7 +27,7 @@ async function roll() {
     document.getElementById("coinSound").loop = true;
     coinSound.play();
     // makes sure that the player can only roll once. this is reset after results are in
-    document.getElementById("playBtn").onclick = function() {
+    document.getElementById("playBtn").onclick = function () {
       idle();
     };
 
@@ -44,7 +44,7 @@ async function roll() {
 
     // iterate on the array of the slots, creating an effect of spinning spools
     for (let i = 1; i < slots_0.length + one; i++) {
-      await new Promise(r => setTimeout(r, sleepTime));
+      await new Promise((r) => setTimeout(r, sleepTime));
       spool_0.innerHTML = slots_0[a];
       a++;
       if (a == slots_0.length) {
@@ -57,7 +57,7 @@ async function roll() {
 
     let b = 1;
     for (let i = 1; i < slots_0.length + two; i++) {
-      await new Promise(r => setTimeout(r, sleepTime));
+      await new Promise((r) => setTimeout(r, sleepTime));
       spool_1.innerHTML = slots_0[b];
       b++;
       if (b == slots_0.length) {
@@ -68,7 +68,7 @@ async function roll() {
 
     let c = 1;
     for (let i = 0; i < slots_0.length + three; i++) {
-      await new Promise(r => setTimeout(r, sleepTime));
+      await new Promise((r) => setTimeout(r, sleepTime));
       spool_2.innerHTML = slots_0[c];
       c++;
       if (c == slots_0.length) {
@@ -112,7 +112,7 @@ async function roll() {
       console.log("1");
     }
   }
-  document.getElementById("playBtn").onclick = function() {
+  document.getElementById("playBtn").onclick = function () {
     roll();
   };
   document.getElementById("coinSound").loop = false;
@@ -120,7 +120,7 @@ async function roll() {
 
 function sleep(ms) {
   console.log("sleeping");
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 function idle() {
   console.log("stop pressing play");
