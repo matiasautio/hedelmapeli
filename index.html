@@ -54,20 +54,14 @@
     </style>
   </head>
   <body>
-    <div style="text-align: center; margin-top: 25px;">
-      <h1>
-        Hedelmäpeli
-      </h1>
+    <div style="text-align: center; margin-top: 25px">
+      <h1>Hedelmäpeli</h1>
     </div>
 
-    <div style="text-align: center;">
-      <p>
-        Your money:
-      </p>
+    <div style="text-align: center">
+      <p>Your money:</p>
     </div>
-    <div style="text-align: center; display:" id="money">
-      5
-    </div>
+    <div style="text-align: center; display: " id="money">5</div>
     <audio id="coinSound" loop="true">
       <source
         src="https://cdn.glitch.com/f0abb21b-4050-474d-b975-4440a086190c%2Fsmw_coin.wav?v=1629985013544"
@@ -75,38 +69,31 @@
     </audio>
     <div
       id="winMessage"
-      style="display:none;
-             position:absolute;
-             z-index:1;
-             width:99vw;"
+      style="display: none; position: absolute; z-index: 1; width: 99vw"
     >
       <p
-        style="transform: rotate(45deg);
-    text-align: center;
-    font-size: 14em;
-    color: gold;
-    margin-top: 0;
-    -webkit-text-stroke-width: 5px;
-    -webkit-text-stroke-color: black;"
+        style="
+          transform: rotate(45deg);
+          text-align: center;
+          font-size: 14em;
+          color: gold;
+          margin-top: 0;
+          -webkit-text-stroke-width: 5px;
+          -webkit-text-stroke-color: black;
+        "
       >
         NICE
       </p>
     </div>
     <!-- Spools  -->
     <div class="wrapper">
-      <div id="one">
-        🍓
-      </div>
-      <div id="two">
-        🍒
-      </div>
-      <div id="three">
-        🍍
-      </div>
+      <div id="one">🍓</div>
+      <div id="two">🍒</div>
+      <div id="three">🍍</div>
     </div>
     <br />
     <div style="text-align: center">
-      <button onclick="roll()" style="padding: 10;" id="playBtn">pelaa</button>
+      <button onclick="roll()" style="padding: 10" id="playBtn">pelaa</button>
       <!--button id="loanBtn" style="display: inline-block" onclick="loan()">
         neuvottele pikalaina
       </button>
@@ -209,7 +196,7 @@
           document.getElementById("coinSound").loop = true;
           coinSound.play();
           // makes sure that the player can only roll once. this is reset after results are in
-          document.getElementById("playBtn").onclick = function() {
+          document.getElementById("playBtn").onclick = function () {
             idle();
           };
 
@@ -229,7 +216,7 @@
 
           // iterate on the array of the slots, creating an effect of spinning spools
           for (let i = 1; i < slots_0.length + one; i++) {
-            await new Promise(r => setTimeout(r, sleepTime));
+            await new Promise((r) => setTimeout(r, sleepTime));
             spool_0.innerHTML = slots_0[a];
             a++;
             if (a == slots_0.length) {
@@ -242,7 +229,7 @@
 
           let b = 1;
           for (let i = 1; i < slots_0.length + two; i++) {
-            await new Promise(r => setTimeout(r, sleepTime));
+            await new Promise((r) => setTimeout(r, sleepTime));
             spool_1.innerHTML = slots_0[b];
             b++;
             if (b == slots_0.length) {
@@ -253,7 +240,7 @@
 
           let c = 1;
           for (let i = 0; i < slots_0.length + three; i++) {
-            await new Promise(r => setTimeout(r, sleepTime));
+            await new Promise((r) => setTimeout(r, sleepTime));
             spool_2.innerHTML = slots_0[c];
             c++;
             if (c == slots_0.length) {
@@ -301,7 +288,7 @@
             displaySplash();
           }
         }
-        document.getElementById("playBtn").onclick = function() {
+        document.getElementById("playBtn").onclick = function () {
           roll();
         };
         document.getElementById("coinSound").loop = false;
@@ -309,7 +296,7 @@
 
       function sleep(ms) {
         console.log("sleeping");
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise((resolve) => setTimeout(resolve, ms));
       }
       function idle() {
         console.log("stop pressing play");
@@ -345,7 +332,7 @@
       function mutePage(isMute) {
         var elems = document.querySelectorAll("video, audio");
 
-        [].forEach.call(elems, function(elem) {
+        [].forEach.call(elems, function (elem) {
           muteMe(elem, isMute);
         });
       }
@@ -407,7 +394,7 @@
         console.log("display splash called");
         if (canDisplaySplash) {
           document.getElementById("winMessage").style.display = "block";
-          await new Promise(r => setTimeout(r, 2500));
+          await new Promise((r) => setTimeout(r, 2500));
           document.getElementById("winMessage").style.display = "none";
         }
       }
