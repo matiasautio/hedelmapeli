@@ -38,7 +38,7 @@ function remapGraphics(lineToMap) {
   for(var i = 0; i < lineToMap.length; i++) {
     simplifiedSlots_0 = ["null", "A", "K", "Q", "J", "10", "9"];
     let simplifiedIndex = simplifiedSlots_0.indexOf(lineToMap[i], 0);
-    console.log(lineToMap[i], emojiSlots_0[simplifiedIndex]);
+    //console.log(lineToMap[i], emojiSlots_0[simplifiedIndex]);
     lineToMap[i] = emojiSlots_0[simplifiedIndex];
   }
   return lineToMap;
@@ -156,7 +156,6 @@ async function spin() {
     spinline = remapGraphics(spinLine);
     prizeMatch = checkWinningLines(spinLine);
   }
-  console.log(prizeMatch);
   let prize = findHighestPrizeForSpin(prizeMatch);
   money = money + prize;
   document.getElementById("money").innerHTML = money;
