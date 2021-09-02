@@ -59,6 +59,7 @@
         Hedelmäpeli
       </h1>
     </div>
+
     <div style="text-align: center;">
       <p>
         Your money:
@@ -72,6 +73,19 @@
         src="https://cdn.glitch.com/f0abb21b-4050-474d-b975-4440a086190c%2Fsmw_coin.wav?v=1629985013544"
       />
     </audio>
+    <div
+      id="winMessage"
+      style="display:none;
+             position:absolute;
+             z-index:1;
+             width:100%;%"
+    >
+      <p
+        style="transform: rotate(45deg); text-align: center; font-size: 4em; color: hotpink;"
+      >
+        NICE
+      </p>
+    </div>
     <!-- Spools  -->
     <div class="wrapper">
       <div id="one">
@@ -83,12 +97,6 @@
       <div id="three">
         🍍
       </div>
-    </div>
-    <div
-      id="winMessage"
-      style="display:none; transform: rotate(45deg); text-align: center;"
-    >
-      NICE
     </div>
     <br />
     <div style="text-align: center">
