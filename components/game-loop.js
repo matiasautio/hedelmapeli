@@ -33,6 +33,28 @@ function findHighestPrizeForSpin(prizeMatch) {
   return highestPrize;
 }
 
+// Remap letters and numbers to emoji
+function remapGraphics(lineToMap) {
+  for(var i = 0; i < lineToMap.length; i++) {
+    simplifiedSlots_0 = ["null", "A", "K", "Q", "J", "10", "9"];
+    let simplifiedIndex = simplifiedSlots_0.indexOf(lineToMap[i], 0);
+    console.log(lineToMap[i], emojiSlots_0[simplifiedIndex]);
+    lineToMap[i] = emojiSlots_0[simplifiedIndex];
+  }
+  return lineToMap;
+  /* let prizeMatch = new Array(PRIZETABLE.length).fill(0);
+  for (let i = 0; i < lineToMap.length; i++) {
+    for (let j = 0; j < PRIZETABLE.length; j++) {
+      if (Number.isNaN(PRIZETABLE[j]["line"][i])) {
+        prizeMatch[j]++;
+      } else if (lineToMap[i] == PRIZETABLE[j]["line"][i]) {
+        prizeMatch[j]++;
+      }
+    }
+  }
+  return prizeMatch;*/
+}
+
 // async because await is used to add delay between icon changes in the spools
 async function spin() {
   // to do: change the slot variables to contain different icons
@@ -66,6 +88,12 @@ async function spin() {
 
   let a = 1;
   let sleepTime = 100;
+
+  playSpinSound();
+  // This short delay is nice feedback with the sound, let's remove it if there's no audio
+  if(!isMuted) {
+    await new Promise((r) => setTimeout(r, 200));
+  }
 
   // iterate on the array of the slots, creating an effect of spinning spools
   for (let i = 1; i < slots_0.length + one; i++) {
@@ -121,7 +149,14 @@ async function spin() {
   // yes, probability for x0x or xx0 is the same, but they give different amounts of money now
   
   let spinLine = [spool_0.innerHTML, spool_1.innerHTML, spool_2.innerHTML];
-  let prizeMatch = checkWinningLines(spinLine);
+  let prizeMatch;
+  if (canUseGraphics) {
+    prizeMatch = checkWinningLines(spinLine);
+  } else {
+    spinline = remapGraphics(spinLine);
+    prizeMatch = checkWinningLines(spinLine);
+  }
+  console.log(prizeMatch);
   let prize = findHighestPrizeForSpin(prizeMatch);
   money = money + prize;
   document.getElementById("money").innerHTML = money;
@@ -139,6 +174,7 @@ async function spin() {
   };
 }
 
+// Simplified spin function to simulate a jackpot
 function jackpot() {
   const spool_0 = document.getElementById("one");
   const spool_1 = document.getElementById("two");
@@ -150,7 +186,7 @@ function jackpot() {
   let spinLine = [spool_0.innerHTML, spool_1.innerHTML, spool_2.innerHTML];
   let prizeMatch = checkWinningLines(spinLine);
   let prize = findHighestPrizeForSpin(prizeMatch);
-  
+
   if (prize != 0 && prize <= 2) {
     displaySplash();
     playSplashSound();

@@ -55,12 +55,14 @@ function changeReelSymbols(checkboxElement) {
 
 // Use card symbols
 function toggleCardSymbols() {
-  slots_0 = ["null", "A", "K", "Q", "J", "10", "9"];
+  slots_0 = simplifiedSlots_0;
+  canUseGraphics = false;
 }
 
 // Use fruit symbols
 function toggleFruitSymbols() {
-  slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
+  slots_0 = emojiSlots_0;
+  canUseGraphics = true;
 }
 
 // Show win message if checkbox is checked
@@ -79,7 +81,7 @@ function toggelSplash(checkboxElement) {
 async function displaySplash() {
   if (canDisplaySplash) {
     document.getElementById("winMessage").style.display = "block";
-    await new Promise((r) => setTimeout(r, 2500));
+    await new Promise((r) => setTimeout(r, 1500));
     document.getElementById("winMessage").style.display = "none";
   }
 }

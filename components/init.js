@@ -1,6 +1,9 @@
 let coinSound = document.getElementById("coinSound");
 let canDisplaySplash = true;
+let canUseGraphics = true;
 
+let simplifiedSlots_0 = ["null", "A", "K", "Q", "J", "10", "9"];
+let emojiSlots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
 var slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
 
 const PRIZETABLE = [
