@@ -8,7 +8,7 @@ function idle() {
 }
 
 // async because await is used to add delay between icon changes in the spools
-async function roll() {
+async function spin() {
   // to do: change the slot variables to contain different icons
   // atm all spools use slots_0
   // const slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
@@ -118,7 +118,7 @@ async function roll() {
     }
   }
   document.getElementById("playBtn").onclick = function () {
-    roll();
+    spin();
   };
   document.getElementById("coinSound").loop = false;
 }
