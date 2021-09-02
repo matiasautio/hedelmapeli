@@ -170,6 +170,7 @@
 
     <script>
       let coinSound = document.getElementById("coinSound");
+      let canDisplaySplash = true;
 
       var slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
 
@@ -189,8 +190,6 @@
         let money = document.getElementById("money").innerHTML;
         let playCost = 1;
         money = parseFloat(money);
-
-        let canDisplaySplash = true;
 
         if (money >= 1) {
           document.getElementById("coinSound").loop = true;
@@ -382,22 +381,22 @@
       function toggelSplash(checkboxElement) {
         if (!checkboxElement.checked) {
           //document.getElementById("winMessage").style.display = "none";
-          global canDisplaySplash = false;
+          canDisplaySplash = false;
         } else if (checkboxElement.checked) {
           //document.getElementById("winMessage").style.display = "block";
-          global canDisplaySplash = true;
+          canDisplaySplash = true;
         }
       }
 
       // Displays splash when a win is made
-      function displaySplash() {
-        if(canDisplaySplash) {
+      async function displaySplash() {
+        console.log("display splash called");
+        if (canDisplaySplash) {
           document.getElementById("winMessage").style.display = "block";
-          sleep(2500);
+          await new Promise(r => setTimeout(r, 2500));
           document.getElementById("winMessage").style.display = "none";
         }
       }
-
     </script>
 
     <script>
