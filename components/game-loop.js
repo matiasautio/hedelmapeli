@@ -7,6 +7,32 @@ function idle() {
   console.log("stop pressing play");
 }
 
+// Check if spin matches any from prizetable
+function checkWinningLines(spinLine) {
+  let prizeMatch = new Array(PRIZETABLE.length).fill(0);
+  for (let i = 0; i < spinLine.length; i++) {
+    for (let j = 0; j < PRIZETABLE.length; j++) {
+      if (Number.isNaN(PRIZETABLE[j]["line"][i])) {
+        prizeMatch[j]++;
+      } else if (spinLine[i] == PRIZETABLE[j]["line"][i]) {
+        prizeMatch[j]++;
+      }
+    }
+  }
+  return prizeMatch;
+}
+
+// Find highest prize won and zero if no wins
+function findHighestPrizeForSpin(prizeMatch) {
+  let highestPrize = 0;
+  for (let i = 0; i < PRIZETABLE.length; i++) {
+    if (prizeMatch[i] == 3 && PRIZETABLE[i]["prize"] > highestPrize) {
+      highestPrize = PRIZETABLE[i]["prize"];
+    }
+  }
+  return highestPrize;
+}
+
 // async because await is used to add delay between icon changes in the spools
 async function spin() {
   // to do: change the slot variables to contain different icons
@@ -23,7 +49,7 @@ async function spin() {
   let money = document.getElementById("money").innerHTML;
   let playCost = 1;
   money = parseFloat(money);
-  if (money < 1) return;  // stop if not enough funds
+  if (money < 1) return; // stop if not enough funds
 
   // makes sure that the player can only roll once. this is reset after results are in
   document.getElementById("playBtn").onclick = function () {
@@ -93,31 +119,13 @@ async function spin() {
   // x 0 x = 2
   // x x 0 or 0 x x = 1
   // yes, probability for x0x or xx0 is the same, but they give different amounts of money now
-  if (
-    spool_0.innerHTML === spool_1.innerHTML &&
-    spool_0.innerHTML === spool_2.innerHTML
-  ) {
-    money = money + 3;
-    document.getElementById("money").innerHTML = money;
-    console.log("3");
-    displaySplash();
-    playSplashSound();
-  } else if (spool_0.innerHTML === spool_1.innerHTML) {
-    money = money + 1;
-    document.getElementById("money").innerHTML = money;
-    console.log("1");
-    displaySplash();
-    playSplashSound();
-  } else if (spool_0.innerHTML === spool_2.innerHTML) {
-    money = money + 2;
-    document.getElementById("money").innerHTML = money;
-    console.log("2");
-    displaySplash();
-    playSplashSound();
-  } else if (spool_1.innerHTML === spool_2.innerHTML) {
-    money = money + 1;
-    document.getElementById("money").innerHTML = money;
-    console.log("1");
+  
+  let spinLine = [spool_0.innerHTML, spool_1.innerHTML, spool_2.innerHTML];
+  let prizeMatch = checkWinningLines(spinLine);
+  let prize = findHighestPrizeForSpin(prizeMatch);
+  money = money + prize;
+  document.getElementById("money").innerHTML = money;
+  if (prize > 0) {
     displaySplash();
     playSplashSound();
   }
