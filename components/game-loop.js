@@ -43,10 +43,10 @@ async function spin() {
 
   // iterate on the array of the slots, creating an effect of spinning spools
   for (let i = 1; i < slots_0.length + one; i++) {
+    playCoinSound();
     await new Promise((r) => setTimeout(r, sleepTime));
     spool_0.innerHTML = slots_0[a];
     a++;
-    playCoinSound();
     if (a == slots_0.length) {
       a = 1;
     }
@@ -57,10 +57,10 @@ async function spin() {
 
   let b = 1;
   for (let i = 1; i < slots_0.length + two; i++) {
+    playCoinSound();
     await new Promise((r) => setTimeout(r, sleepTime));
     spool_1.innerHTML = slots_0[b];
     b++;
-    playCoinSound();
     if (b == slots_0.length) {
       b = 1;
     }
@@ -69,10 +69,10 @@ async function spin() {
 
   let c = 1;
   for (let i = 0; i < slots_0.length + three; i++) {
+    playCoinSound();
     await new Promise((r) => setTimeout(r, sleepTime));
     spool_2.innerHTML = slots_0[c];
     c++;
-    playCoinSound();
     if (c == slots_0.length) {
       c = 1;
     }
