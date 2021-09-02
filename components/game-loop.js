@@ -51,8 +51,6 @@ async function spin() {
   money = parseFloat(money);
   if (money < 1) return; // stop if not enough funds
 
-  document.getElementById("coinSound").loop = true;
-  coinSound.play();
   // makes sure that the player can only roll once. this is reset after results are in
   document.getElementById("playBtn").onclick = function () {
     idle();
@@ -74,6 +72,7 @@ async function spin() {
     await new Promise((r) => setTimeout(r, sleepTime));
     spool_0.innerHTML = slots_0[a];
     a++;
+    playCoinSound();
     if (a == slots_0.length) {
       a = 1;
     }
@@ -87,6 +86,7 @@ async function spin() {
     await new Promise((r) => setTimeout(r, sleepTime));
     spool_1.innerHTML = slots_0[b];
     b++;
+    playCoinSound();
     if (b == slots_0.length) {
       b = 1;
     }
@@ -98,6 +98,7 @@ async function spin() {
     await new Promise((r) => setTimeout(r, sleepTime));
     spool_2.innerHTML = slots_0[c];
     c++;
+    playCoinSound();
     if (c == slots_0.length) {
       c = 1;
     }
@@ -118,7 +119,7 @@ async function spin() {
   // x 0 x = 2
   // x x 0 or 0 x x = 1
   // yes, probability for x0x or xx0 is the same, but they give different amounts of money now
-
+  
   let spinLine = [spool_0.innerHTML, spool_1.innerHTML, spool_2.innerHTML];
   let prizeMatch = checkWinningLines(spinLine);
   let prize = findHighestPrizeForSpin(prizeMatch);
@@ -126,11 +127,10 @@ async function spin() {
   document.getElementById("money").innerHTML = money;
   if (prize > 0) {
     displaySplash();
+    playSplashSound();
   }
 
   document.getElementById("playBtn").onclick = function () {
     spin();
   };
-  document.getElementById("coinSound").loop = false;
-  document.getElementById("coinSound").pause();
 }

@@ -62,14 +62,9 @@
       <p>Your money:</p>
     </div>
     <div style="text-align: center" id="money">5</div>
-    <audio id="coinSound" loop="true">
-      <source
-        src="https://cdn.glitch.com/f0abb21b-4050-474d-b975-4440a086190c%2Fsmw_coin.wav?v=1629985013544"
-      />
-    </audio>
     <div
       id="winMessage"
-      style="display: none; position: absolute; z-index: 1; width: 99vw"
+      style="display: none; position: absolute; z-index: 1; width: 50%; left: 25%;"
     >
       <p
         style="
@@ -151,5 +146,6 @@
     <script src="components/features.js" defer></script>
     <script src="components/game-loop.js" defer></script>
     <script src="components/coin-balance.js" defer></script>
+    <script src="components/audio-playback.js" defer></script>
   </body>
 </html>

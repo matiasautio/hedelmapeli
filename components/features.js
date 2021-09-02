@@ -2,9 +2,11 @@
 // and unmute if unchecked
 function muteAudio(checkboxElement) {
   if (!checkboxElement.checked) {
-    mutePage(true);
+    //mutePage(true);
+    isMuted = true;
   } else if (checkboxElement.checked) {
-    mutePage(false);
+    //mutePage(false);
+    isMuted = false;
   }
 }
 
