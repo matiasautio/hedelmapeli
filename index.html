@@ -64,7 +64,13 @@
     <div style="text-align: center" id="money">5</div>
     <div
       id="winMessage"
-      style="display: none; position: absolute; z-index: 1; width: 50%; left: 25%;"
+      style="
+        display: none;
+        position: absolute;
+        z-index: 1;
+        width: 50%;
+        left: 25%;
+      "
     >
       <p
         style="
@@ -80,9 +86,9 @@
         NICE
       </p>
     </div>
-      <div
+    <div
       id="jackpotMessage"
-      style="display: none; position: absolute; z-index: 1; width: 100vw;"
+      style="display: none; position: absolute; z-index: 1; width: 100vw"
     >
       <p
         style="
@@ -101,14 +107,20 @@
     <div class="wrapper">
       <div id="one">🍓</div>
       <div id="two">🍒</div>
-      <div id="three">🍍</div>
+      <div id="three">⭐</div>
     </div>
     <br />
     <div style="text-align: center">
       <button onclick="spin()" style="padding: 10" id="playBtn">SPIN</button>
     </div>
     <div style="text-align: center">
-      <button onclick="jackpot()" style="padding: 10; display: none" id="playBtn">debug jackpot</button>
+      <button
+        onclick="jackpot()"
+        style="padding: 10; display: none"
+        id="playBtn"
+      >
+        debug jackpot
+      </button>
     </div>
     <div style="text-align: center">
       <p>Choose slot features:</p>
