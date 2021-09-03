@@ -16,6 +16,10 @@ function checkWinningLines(spinLine) {
         prizeMatch[j]++;
       } else if (spinLine[i] == PRIZETABLE[j]["line"][i]) {
         prizeMatch[j]++;
+      } else if (spinLine[i] == "⭐") {
+        prizeMatch[j]++;
+      } else if (spinLine[i] == "🍹") {
+        prizeMatch[j] = prizeMatch[j] + 333;
       }
     }
   }
@@ -28,6 +32,8 @@ function findHighestPrizeForSpin(prizeMatch) {
   for (let i = 0; i < PRIZETABLE.length; i++) {
     if (prizeMatch[i] == 3 && PRIZETABLE[i]["prize"] > highestPrize) {
       highestPrize = PRIZETABLE[i]["prize"];
+    } else if (prizeMatch[i] == 999 && PRIZETABLE[i]["prize"] > highestPrize) {
+      highestPrize = PRIZETABLE[i]["prize"];
     }
   }
   return highestPrize;
@@ -35,7 +41,7 @@ function findHighestPrizeForSpin(prizeMatch) {
 
 // Remap letters and numbers to emoji
 function remapGraphics(lineToMap) {
-  for(var i = 0; i < lineToMap.length; i++) {
+  for (var i = 0; i < lineToMap.length; i++) {
     simplifiedSlots_0 = ["null", "A", "K", "Q", "J", "10", "9"];
     let simplifiedIndex = simplifiedSlots_0.indexOf(lineToMap[i], 0);
     //console.log(lineToMap[i], emojiSlots_0[simplifiedIndex]);
@@ -59,9 +65,9 @@ function remapGraphics(lineToMap) {
 async function spin() {
   // to do: change the slot variables to contain different icons
   // atm all spools use slots_0
-  // const slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
-  const slots_1 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
-  const slots_2 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "🍍"];
+  // const slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "⭐"];
+  const slots_1 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "⭐"];
+  const slots_2 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "⭐"];
 
   // Divs for each of the three spools
   const spool_0 = document.getElementById("one");
@@ -78,8 +84,11 @@ async function spin() {
     idle();
   };
 
-  money = money - playCost;
-  document.getElementById("money").innerHTML = money;
+  // don't make player pay if it is bonus round
+  if (!keepSpinning) {
+    money = money - playCost;
+    document.getElementById("money").innerHTML = money;
+  }
 
   // Calcute a random value for each spool to display
   var one = 1 + Math.floor(Math.random() * Math.floor(slots_0.length - 1));
@@ -91,7 +100,7 @@ async function spin() {
 
   playSpinSound();
   // This short delay is nice feedback with the sound, let's remove it if there's no audio
-  if(!isMuted) {
+  if (!isMuted) {
     await new Promise((r) => setTimeout(r, 200));
   }
 
@@ -147,7 +156,7 @@ async function spin() {
   // x 0 x = 2
   // x x 0 or 0 x x = 1
   // yes, probability for x0x or xx0 is the same, but they give different amounts of money now
-  
+
   let spinLine = [spool_0.innerHTML, spool_1.innerHTML, spool_2.innerHTML];
   let prizeMatch;
   if (canUseGraphics) {
@@ -157,16 +166,23 @@ async function spin() {
     prizeMatch = checkWinningLines(spinLine);
   }
   let prize = findHighestPrizeForSpin(prizeMatch);
-  money = money + prize;
-  document.getElementById("money").innerHTML = money;
+
   if (prize != 0 && prize <= 2) {
     displaySplash();
     playSplashSound();
-  }
-  else if (prize == 3) {
+  } else if (prize == 3) {
     displayJackpotSplash();
     playJackpotSplashSound();
+  } else if (prize == 999) {
+    prize = 0;
+    var keepSpinning = true;
+    spin();
+    spin();
+    spin();
   }
+
+  money = money + prize;
+  document.getElementById("money").innerHTML = money;
 
   document.getElementById("playBtn").onclick = function () {
     spin();
@@ -189,8 +205,7 @@ function jackpot() {
   if (prize != 0 && prize <= 2) {
     displaySplash();
     playSplashSound();
-  }
-  else if (prize == 3) {
+  } else if (prize == 3) {
     displayJackpotSplash();
     playJackpotSplashSound();
   }
