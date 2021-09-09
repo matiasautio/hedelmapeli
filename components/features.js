@@ -76,19 +76,16 @@ function toggelSplash(checkboxElement) {
     canDisplaySplash = true;
   }
 }
-
-// Displays splash when a win is made
-async function displaySplash() {
+// Let's simpilfy this by having just one function for the splash
+async function displaySplash(message, color) {
   if (canDisplaySplash) {
-    document.getElementById("winMessage").style.display = "block";
+    var splash = document.getElementById("splash");
+    var splashChild = document.getElementById("splashChild");
+    splashChild.innerHTML = message;
+    splashChild.style.color = color;
+    //splash.firstChild.style
+    splash.style.display = "block";
     await new Promise((r) => setTimeout(r, 1500));
-    document.getElementById("winMessage").style.display = "none";
-  }
-}
-async function displayJackpotSplash() {
-  if (canDisplaySplash) {
-    document.getElementById("jackpotMessage").style.display = "block";
-    await new Promise((r) => setTimeout(r, 2500));
-    document.getElementById("jackpotMessage").style.display = "none";
+    splash.style.display = "none";
   }
 }

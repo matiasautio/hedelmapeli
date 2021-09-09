@@ -1,7 +1,13 @@
 <html>
   <head>
     <title>HEDELMÄPELI</title>
+     <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Karla">
     <style>
+      body {
+        font-family: 'Karla', serif;
+        font-size: 1em;
+      }
       .wrapper {
         display: flex;
         margin-top: 25px;
@@ -57,13 +63,8 @@
     <div style="text-align: center; margin-top: 25px">
       <h1>Hedelmäpeli</h1>
     </div>
-
-    <div style="text-align: center">
-      <p>Your money:</p>
-    </div>
-    <div style="text-align: center" id="money">5</div>
     <div
-      id="winMessage"
+      id="splash"
       style="
         display: none;
         position: absolute;
@@ -72,36 +73,18 @@
         left: 25%;
       "
     >
-      <p
+      <p id="splashChild"
         style="
           transform: rotate(45deg);
           text-align: center;
-          font-size: 14em;
+          font-size: 10em;
           color: gold;
-          margin-top: 0;
+          margin-top: 100px;
           -webkit-text-stroke-width: 5px;
           -webkit-text-stroke-color: black;
         "
       >
-        NICE
-      </p>
-    </div>
-    <div
-      id="jackpotMessage"
-      style="display: none; position: absolute; z-index: 1; width: 100vw"
-    >
-      <p
-        style="
-          transform: rotate(0deg);
-          text-align: center;
-          font-size: 14em;
-          color: #f03a17;
-          margin-top: -25px;
-          -webkit-text-stroke-width: 5px;
-          -webkit-text-stroke-color: black;
-        "
-      >
-        JACKPOT
+        splash text appears here
       </p>
     </div>
     <div class="wrapper">
@@ -116,10 +99,19 @@
     <div style="text-align: center">
       <button
         onclick="jackpot()"
-        style="padding: 10; display: none"
-        id="playBtn"
+        style="padding: 10; display: none;"
+        id="jackpotBtn"
       >
         debug jackpot
+      </button>
+    </div>
+    <!-- Simply changes every icon to be the scatter icon -->
+    <div style="text-align: center">
+      <button
+        style="padding: 10; display: none"
+        id="scatterBtn"
+      >
+        debug scatter
       </button>
     </div>
     <div style="text-align: center">
@@ -175,6 +167,18 @@
       </div>
     </div>
     <br />
+    <div style="
+          background: #f1f1f1;
+          padding: 20px;
+          width: fit-content;
+          position: absolute;
+          right: 5%;
+          bottom: 25%;">
+      <div style="text-align: center">
+        <p>Your money:</p>
+      </div>
+      <div style="text-align: center; font-size: 2em;" id="money">5</div>
+    </div>
     <script src="components/init.js" defer></script>
     <script src="components/features.js" defer></script>
     <script src="components/game-loop.js" defer></script>

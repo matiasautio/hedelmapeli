@@ -48,26 +48,12 @@ function remapGraphics(lineToMap) {
     lineToMap[i] = emojiSlots_0[simplifiedIndex];
   }
   return lineToMap;
-  /* let prizeMatch = new Array(PRIZETABLE.length).fill(0);
-  for (let i = 0; i < lineToMap.length; i++) {
-    for (let j = 0; j < PRIZETABLE.length; j++) {
-      if (Number.isNaN(PRIZETABLE[j]["line"][i])) {
-        prizeMatch[j]++;
-      } else if (lineToMap[i] == PRIZETABLE[j]["line"][i]) {
-        prizeMatch[j]++;
-      }
-    }
-  }
-  return prizeMatch;*/
 }
 
 // async because await is used to add delay between icon changes in the spools
 async function spin() {
   // to do: change the slot variables to contain different icons
   // atm all spools use slots_0
-  // const slots_0 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "⭐"];
-  const slots_1 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "⭐"];
-  const slots_2 = ["null", "🍓", "🍒", "🍇", "🍊", "🍋", "⭐"];
 
   // Divs for each of the three spools
   const spool_0 = document.getElementById("one");
@@ -168,17 +154,18 @@ async function spin() {
   let prize = findHighestPrizeForSpin(prizeMatch);
 
   if (prize != 0 && prize <= 2) {
-    displaySplash();
+    displaySplash("NICE!", winColor);
     playSplashSound();
   } else if (prize == 3) {
-    displayJackpotSplash();
+    displaySplash("JACKPOT!", jackpotColor);
     playJackpotSplashSound();
   } else if (prize == 999) {
+    displaySplash("SCATTER!", scatterColor);
+    playJackpotSplashSound();
     prize = 0;
-    var keepSpinning = true;
-    spin();
-    spin();
-    spin();
+    keepSpinning = true;
+    // this is here just for debugging purposes
+    slots_0 = emojiSlots_0;
   }
 
   money = money + prize;
@@ -187,6 +174,15 @@ async function spin() {
   document.getElementById("playBtn").onclick = function () {
     spin();
   };
+
+  if(keepSpinning && scatterSpins > 0) {
+    scatterSpins--;
+    spin();
+  }
+  else {
+    keepSpinning = false;
+    scatterSpins = 2;
+  }
 }
 
 // Simplified spin function to simulate a jackpot
@@ -206,7 +202,17 @@ function jackpot() {
     displaySplash();
     playSplashSound();
   } else if (prize == 3) {
-    displayJackpotSplash();
+    displaySplash("JACKPOT!", jackpotColor);
     playJackpotSplashSound();
   }
+}
+
+document.getElementById("scatterBtn").onclick = function () {
+    slotsToScatter();
+};
+
+function slotsToScatter() {
+  //slotsAreScatter = !slotsAreScatter;
+  slots_0 = scatterSlots;
+  spin();
 }
