@@ -1,0 +1,22 @@
+{
+  "name": "hedelmapeli",
+  "version": "1.0.0",
+  "description": "Hedelmapeli is an investigation into the elements that make slot machines as playable and addictive as they are.",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo --live --verbose --port 3000 --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matiasautio/hedelmapeli.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matiasautio/hedelmapeli/issues"
+  },
+  "homepage": "https://github.com/matiasautio/hedelmapeli#readme",
+  "dependencies": {
+    "budo": "^11.6.4"
+  }
+}
