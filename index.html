@@ -9,11 +9,13 @@
     <a-assets>
       <a-asset-item id="reel" src="/3D_assets/reel.glb"></a-asset-item>
     </a-assets>
-    <a-cylinder position="-1 1.5 -3" rotation="0 0 90" animation="property: rotation; to: 360 0 90; dur: 2000; easing: linear; loop: true" color="red" material="" geometry=""></a-cylinder>
+    <!--a-cylinder position="-1 1.5 -3" rotation="0 0 90" animation="property: rotation; to: 360 0 90; dur: 2000; easing: linear; loop: true" color="red" material="" geometry=""></a-cylinder>
     <a-cylinder position="0 1.5 -3" rotation="0 0 90" animation="property: rotation; to: 360 0 90; dur: 2000; easing: linear; loop: true"  color="green" material="" geometry=""></a-cylinder>
-    <a-cylinder position="1 1.5 -3" rotation="0 0 90" animation="property: rotation; to: 360 0 90; dur: 2000; easing: linear; loop: true" color="blue" material="" geometry=""></a-cylinder>
+    <a-cylinder position="1 1.5 -3" rotation="0 0 90" animation="property: rotation; to: 360 0 90; dur: 2000; easing: linear; loop: true" color="blue" material="" geometry=""></a-cylinder-->
     <a-sky color="#ECECEC" material="" geometry=""></a-sky>
-    <a-entity gltf-model="#reel"></a-entity>
+    <a-entity gltf-model="#reel" position="-0.5 1.5 -3" rotation="0 0 0" animation="property: rotation; to: 360 0 0; dur: 2000; easing: linear; loop: true" color="blue" material="" geometry=""></a-entity>
+    <a-entity gltf-model="#reel" position="0 1.5 -3" rotation="0 0 0" animation="property: rotation; to: 360 0 0; dur: 2000; easing: linear; loop: true" color="blue" material="" geometry=""></a-entity>
+    <a-entity gltf-model="#reel" position="0.5 1.5 -3" rotation="0 0 0" animation="property: rotation; to: 360 0 0; dur: 2000; easing: linear; loop: true" color="blue" material="" geometry=""></a-entity>
     <div class="a-loader-title" style="display: none;"></div>
   </a-scene>
 </body>
