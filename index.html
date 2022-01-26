@@ -1,14 +1,21 @@
 <html>
-  <head>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  </head>
-  <body>
-    <a-scene>
-      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
-      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
-      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-      <a-sky color="#ECECEC"></a-sky>
-    </a-scene>
-  </body>
+
+<head>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+</head>
+
+<body>
+  <a-scene inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="" device-orientation-permission-ui="">
+    <a-assets>
+      <a-asset-item id="reel" src="/3D_assets/reel.glb"></a-asset-item>
+    </a-assets>
+    <a-cylinder position="-1 1.5 -3" rotation="0 0 90" animation="property: rotation; to: 360 0 90; dur: 2000; easing: linear; loop: true" color="red" material="" geometry=""></a-cylinder>
+    <a-cylinder position="0 1.5 -3" rotation="0 0 90" animation="property: rotation; to: 360 0 90; dur: 2000; easing: linear; loop: true"  color="green" material="" geometry=""></a-cylinder>
+    <a-cylinder position="1 1.5 -3" rotation="0 0 90" animation="property: rotation; to: 360 0 90; dur: 2000; easing: linear; loop: true" color="blue" material="" geometry=""></a-cylinder>
+    <a-sky color="#ECECEC" material="" geometry=""></a-sky>
+    <a-entity gltf-model="#reel"></a-entity>
+    <div class="a-loader-title" style="display: none;"></div>
+  </a-scene>
+</body>
+
 </html>
