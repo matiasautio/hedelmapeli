@@ -2,6 +2,17 @@
 
 <head>
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script>
+    let canRoll = true;
+  </script>
+  <script>
+    function lastReelEventListener(){
+      const lastReel = document.getElementById("reel2");
+      lastReel.addEventListener('animationcomplete', function(){
+          canRoll = true;
+      });
+    };
+</script>
   <style>
     .container {
       height: 200px;
@@ -24,7 +35,7 @@
     </style>
 </head>
 
-<body>
+<body onload="lastReelEventListener()">
   <a-scene inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" style="z-index: 0; position: absolute;">
     <a-assets>
       <a-asset-item id="reel" src="/3D_assets/reel.glb"></a-asset-item>
@@ -44,20 +55,23 @@
   <script>
     const element = document.getElementById("playBtn");
     element.addEventListener("click", function() {
-      let reels = [];
-      reels.push(document.getElementById("reel0"));
-      reels.push(document.getElementById("reel1"));
-      reels.push(document.getElementById("reel2"));
-      let delay = 0;
-      //document.getElementById("reel0").setAttribute("animation", "property: rotation; to: 360 0 0; dur: 2000; easing: linear; loop: false")
-      reels.forEach(element => {
-        console.log("Reels rolling");
-        // tried delay for each reel, doesn't work yet
-        // for what ever reason this needs to be reset first
-        element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 0 0 0");
-        element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 360 0 0; delay: "+delay+"");
-        delay += 200;
-      });
+      if(canRoll) {
+        canRoll = false;
+        let reels = [];
+        reels.push(document.getElementById("reel0"));
+        reels.push(document.getElementById("reel1"));
+        reels.push(document.getElementById("reel2"));
+        let delay = 0;
+        //document.getElementById("reel0").setAttribute("animation", "property: rotation; to: 360 0 0; dur: 2000; easing: linear; loop: false")
+        reels.forEach(element => {
+          console.log("Reels rolling");
+          // tried delay for each reel, doesn't work yet
+          // for what ever reason the animation needs to be reset first
+          element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 0 0 0");
+          element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 360 0 0; delay: "+delay+"");
+          delay += 200;
+        });
+      }
     });
     </script>
 </body>
