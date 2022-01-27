@@ -48,12 +48,15 @@
       reels.push(document.getElementById("reel0"));
       reels.push(document.getElementById("reel1"));
       reels.push(document.getElementById("reel2"));
+      let delay = 0;
       //document.getElementById("reel0").setAttribute("animation", "property: rotation; to: 360 0 0; dur: 2000; easing: linear; loop: false")
       reels.forEach(element => {
+        console.log("Reels rolling");
         // tried delay for each reel, doesn't work yet
-        let delay = 0;
-        element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 360 0 0; dur: 2000; delay: delay; easing: linear; loop: false")
-        delay += 250;
+        // for what ever reason this needs to be reset first
+        element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 0 0 0");
+        element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 360 0 0; delay: "+delay+"");
+        delay += 200;
       });
     });
     </script>
