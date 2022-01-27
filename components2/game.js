@@ -24,6 +24,7 @@ element.addEventListener("click", function() {
       element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 0 0 0");
       element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 360 0 0; delay: "+delay+"");
       delay += 200;
+      element.getObject3D('mesh').children[0].material.color = new THREE.Color( 'skyblue' );
     });
   }
 });
