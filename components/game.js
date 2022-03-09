@@ -31,11 +31,11 @@ element.addEventListener("click", function() {
     //document.getElementById("reel0").setAttribute("animation", "property: rotation; to: 360 0 0; dur: 2000; easing: linear; loop: false")
     reels.forEach(element => {
       console.log("Reels rolling");
-      // for what ever reason the animation needs to be reset first
-      element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 0 0 0");
-      element.setAttribute("animation", "property: rotation; from: 0 0 0; to: 360 0 0; delay: "+delay+"");
-      element.getObject3D('mesh').children[9].material.color = new THREE.Color( 'skyblue' );
-      console.log(element.getObject3D('mesh').children);
+      // console.log(element);
+      let rotation_target = THREE.Math.radToDeg(element.object3D.rotation.x + Math.PI);
+      element.setAttribute("animation", "property: rotation; to: "+rotation_target+" 0 0; delay: "+delay+"");
+      // element.getObject3D('mesh').children[11].material.color = new THREE.Color( 'skyblue' );
+      // console.log(element.getObject3D('mesh').children);
       delay += 200;
     });
   }
