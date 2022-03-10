@@ -38,5 +38,7 @@ element.addEventListener("click", function() {
       // console.log(element.getObject3D('mesh').children);
       delay += 200;
     });
+    reels[0].getObject3D('mesh').children[0].material.color = new THREE.Color( 'skyblue' );
+    reels[0].getObject3D('mesh').children[0].material.map = new THREE.TextureLoader().load( "2D_assets/q_paint_inv.png");
   }
 });
