@@ -15,6 +15,11 @@ AFRAME.registerComponent('reorderobjectcchildren', {
       children.sort((a, b) => a.name.localeCompare(b.name));
       console.log(children);
       obj.children = children;
+
+      obj.children.forEach(face => {
+        face.material.color = new THREE.Color( 'skyblue' );
+        face.material.map = texture_pool[THREE.Math.randInt(0, texture_pool.length - 1)];
+      });
     });
   }
 });
@@ -31,11 +36,29 @@ function GetRotationTargetFromCurrentPosition(current_rotation, angle_to_change)
   return(rotation_target);
 };
 
-function GetUpcomingFaceFromCurrentPosition(quaternion, angle_to_change, sides){
+function GetFaceFromPosition(quaternion, angle_to_change, sides){
   const euler = new THREE.Euler( 0, 0, 0 );
   euler.setFromQuaternion( quaternion );
-  const face = (Math.round(THREE.Math.radToDeg(euler.x)) + angle_to_change) / (360 / sides);
+  let degree = Math.round(THREE.Math.radToDeg(euler.x));
+
+  if(degree < 0) {
+    degree += 360;
+  }
+
+  const face = (degree + angle_to_change) / (360 / sides);
   return(face);
+};
+
+function GetHiddenFacesFromOppositeFace(face){
+  const default_hidden_faces = [
+    3, 4, 5, 6, 7, 8, 9
+  ];
+
+  const current_hidden_faces = default_hidden_faces.map( function(value) {
+    return (value + face) % 12;
+  } );
+
+  return(current_hidden_faces);
 };
 
 const element = document.getElementById("playBtn");
@@ -54,20 +77,21 @@ element.addEventListener("click", function() {
       // Get indices of current hidden-from-view slots
       // Change those slots to random slots
 
-      const angle_to_change = 30;
+      const angle_to_change = 180;
       const sides = 12;
       const rotation_target = GetRotationTargetFromCurrentPosition(element.object3D.rotation.x, angle_to_change);
-      const face = GetUpcomingFaceFromCurrentPosition(element.object3D.quaternion, angle_to_change, sides);
+
+      const current_face = GetFaceFromPosition(element.object3D.quaternion, 0, sides);
+      const next_face = GetFaceFromPosition(element.object3D.quaternion, angle_to_change, sides);
+      const current_hidden_faces = GetHiddenFacesFromOppositeFace(current_face);
+
+      for (const face of current_hidden_faces) {
+        element.getObject3D('mesh').children[face].material.map = texture_pool[THREE.Math.randInt(0, texture_pool.length - 1)];
+      }
 
       element.setAttribute("animation", "property: rotation; to: "+rotation_target+" 0 0; delay: "+delay+"");
-      // element.getObject3D('mesh').children[11].material.color = new THREE.Color( 'skyblue' );
-      // console.log(element.getObject3D('mesh').children);
+
       delay += 200;
     });
-
-    reels[2].getObject3D('mesh').children.forEach(slot => {
-      slot.material.map = texture_pool[1];
-    });
-
   }
 });
