@@ -76,11 +76,18 @@ function CheckIfWin() {
     }
   }
 
-  const balance = Number(document.getElementById('balance').innerHTML);
-  document.getElementById('balance').innerHTML = ChangeBalanceBy(
-    balance,
-    maxWin
-  );
+  if (maxWin > 0) {
+    const splashText = document.getElementById('splashText');
+    splashText.setAttribute('text', 'value: ' + maxWin);
+    splashText.object3D.visible = true;
+    splashText.emit('startWinAnim', null, false);
+
+    const balance = Number(document.getElementById('balance').innerHTML);
+    document.getElementById('balance').innerHTML = ChangeBalanceBy(
+      balance,
+      maxWin
+    );
+  }
 }
 
 function lastReelEventListener() {
