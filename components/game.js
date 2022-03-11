@@ -1,6 +1,7 @@
 let canRoll = true;
+let balance = 3;
 
-let texturePool = {
+const texturePool = {
   T: new THREE.TextureLoader().load('2D_assets/T.png'),
   J: new THREE.TextureLoader().load('2D_assets/J.png'),
   Q: new THREE.TextureLoader().load('2D_assets/Q.png'),
@@ -8,8 +9,8 @@ let texturePool = {
 };
 
 function RandomPropertyFrom(obj) {
-  let keys = Object.keys(obj);
-  let randomProperty = obj[keys[(keys.length * Math.random()) << 0]];
+  const keys = Object.keys(obj);
+  const randomProperty = obj[keys[(keys.length * Math.random()) << 0]];
   return randomProperty;
 }
 
@@ -18,7 +19,7 @@ AFRAME.registerComponent('reorderobjectcchildren', {
     this.el.addEventListener('model-loaded', () => {
       // Reorder objects children
       const obj = this.el.getObject3D('mesh');
-      var children = Array.from(obj.children);
+      const children = Array.from(obj.children);
       children.sort((a, b) => a.name.localeCompare(b.name));
       obj.children = children;
 
@@ -38,16 +39,12 @@ function lastReelEventListener() {
   });
 }
 
-function GetRotationTargetFromCurrentPosition(
-  current_rotation,
-  angle_to_change
-) {
-  const rotation_target =
-    THREE.Math.radToDeg(current_rotation) + angle_to_change;
-  return rotation_target;
+function RotateTo({ fromRotation, degreesToRotate }) {
+  const rotation = THREE.Math.radToDeg(fromRotation) + degreesToRotate;
+  return rotation;
 }
 
-function GetFaceFromPosition(quaternion, angle_to_change, sides) {
+function GetFaceFromRotation({ quaternion, faces, furtherRotation = 0 }) {
   const euler = new THREE.Euler(0, 0, 0);
   euler.setFromQuaternion(quaternion);
   let degree = Math.round(THREE.Math.radToDeg(euler.x));
@@ -56,60 +53,65 @@ function GetFaceFromPosition(quaternion, angle_to_change, sides) {
     degree += 360;
   }
 
-  const face = (degree + angle_to_change) / (360 / sides);
+  const face = (degree + furtherRotation) / (360 / faces);
   return face;
 }
 
-function GetHiddenFacesFromOppositeFace(face) {
-  const default_hidden_faces = [3, 4, 5, 6, 7, 8, 9];
-
-  const current_hidden_faces = default_hidden_faces.map(function (value) {
+function GetHiddenFacesFrom({ face, initiallyHidden = [3, 4, 5, 6, 7, 8, 9] }) {
+  const hiddenFaces = initiallyHidden.map(function (value) {
     return (value + face) % 12;
   });
+  return hiddenFaces;
+}
 
-  return current_hidden_faces;
+function HaveBalance(balance) {
+  return balance > 1
 }
 
 const element = document.getElementById('playBtn');
 element.addEventListener('click', function () {
-  if (canRoll) {
+  if (canRoll && HaveBalance(balance)) {
     canRoll = false;
+    balance -= 1;
+    console.log(balance)
     let reels = [];
     reels.push(document.getElementById('reel0'));
     reels.push(document.getElementById('reel1'));
     reels.push(document.getElementById('reel2'));
     let delay = 0;
+    console.log('Reels rolling');
 
     reels.forEach((element) => {
-      console.log('Reels rolling');
 
-      // Get indices of current hidden-from-view slots
-      // Change those slots to random slots
+      const degreesToRotateInOneRoll = 180;
 
-      const angle_to_change = 180;
-      const sides = 12;
-      const rotation_target = GetRotationTargetFromCurrentPosition(
-        element.object3D.rotation.x,
-        angle_to_change
-      );
+      const faces = 12;
 
-      const current_face = GetFaceFromPosition(
-        element.object3D.quaternion,
-        0,
-        sides
-      );
-      const next_face = GetFaceFromPosition(
-        element.object3D.quaternion,
-        angle_to_change,
-        sides
-      );
-      const current_hidden_faces = GetHiddenFacesFromOppositeFace(current_face);
+      const rotation_target = RotateTo({
+        fromRotation: element.object3D.rotation.x,
+        degreesToRotate: degreesToRotateInOneRoll,
+      });
 
-      for (const face of current_hidden_faces) {
+      const currentlyFacing = GetFaceFromRotation({
+        quaternion: element.object3D.quaternion,
+        faces: faces,
+        furtherRotation: 0,
+      });
+
+      const willFaceNext = GetFaceFromRotation({
+        quaternion: element.object3D.quaternion,
+        faces: faces,
+        furtherRotation: degreesToRotateInOneRoll,
+      });
+
+      const currentlyHiddenFaces = GetHiddenFacesFrom({face: currentlyFacing});
+
+      for (const face of currentlyHiddenFaces) {
         element.getObject3D('mesh').children[face].material.map =
           RandomPropertyFrom(texturePool);
       }
 
+      // Trigger animation
       element.setAttribute(
         'animation',
         'property: rotation; to: ' +
