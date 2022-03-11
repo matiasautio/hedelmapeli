@@ -1,5 +1,5 @@
 let canRoll = true;
-let balance = 3;
+const degreesToRotateInOneRoll = 180;
 
 const texturePool = {
   T: new THREE.TextureLoader().load('2D_assets/T.png'),
@@ -8,9 +8,15 @@ const texturePool = {
   K: new THREE.TextureLoader().load('2D_assets/K.png'),
 };
 
-function RandomPropertyFrom(obj) {
+function RandomKeyFrom(obj) {
   const keys = Object.keys(obj);
-  const randomProperty = obj[keys[(keys.length * Math.random()) << 0]];
+  const randomKey = keys[(keys.length * Math.random()) << 0];
+  return randomKey;
+}
+
+function RandomPropertyFrom(obj) {
+  const randomKey = RandomKeyFrom(obj);
+  const randomProperty = obj[randomKey];
   return randomProperty;
 }
 
@@ -32,9 +38,55 @@ AFRAME.registerComponent('reorderobjectcchildren', {
   },
 });
 
+function GetCurrentLine() {
+  let reels = [];
+  reels.push(document.getElementById('reel0'));
+  reels.push(document.getElementById('reel1'));
+  reels.push(document.getElementById('reel2'));
+
+  const currentLine = reels.map((element) => {
+    const currentlyFacing = GetFaceFromRotation({
+      quaternion: element.object3D.quaternion,
+    });
+
+    const symbol =
+      element.getObject3D('mesh').children[currentlyFacing].material.map.name;
+
+    return symbol;
+  });
+  return currentLine;
+}
+
+function CheckIfWin() {
+  currentLine = GetCurrentLine().join('');
+
+  const winTable = [
+    { line: 'TTT', win: 2 },
+    { line: 'JJJ', win: 4 },
+    { line: 'QQQ', win: 8 },
+    { line: 'KKK', win: 8 },
+  ];
+
+  maxWin = 0;
+  for (const winLine of winTable) {
+    if (winLine.line === currentLine) {
+      if (winLine.win > maxWin) {
+        maxWin = winLine.win;
+      }
+    }
+  }
+
+  const balance = Number(document.getElementById('balance').innerHTML);
+  document.getElementById('balance').innerHTML = ChangeBalanceBy(
+    balance,
+    maxWin
+  );
+}
+
 function lastReelEventListener() {
   const lastReel = document.getElementById('reel2');
   lastReel.addEventListener('animationcomplete', function () {
+    CheckIfWin();
     canRoll = true;
   });
 }
@@ -44,7 +96,7 @@ function RotateTo({ fromRotation, degreesToRotate }) {
   return rotation;
 }
 
-function GetFaceFromRotation({ quaternion, faces, furtherRotation = 0 }) {
+function GetFaceFromRotation({ quaternion, faces = 12, furtherRotation = 0 }) {
   const euler = new THREE.Euler(0, 0, 0);
   euler.setFromQuaternion(quaternion);
   let degree = Math.round(THREE.Math.radToDeg(euler.x));
@@ -65,15 +117,20 @@ function GetHiddenFacesFrom({ face, initiallyHidden = [3, 4, 5, 6, 7, 8, 9] }) {
 }
 
 function HaveBalance(balance) {
-  return balance > 1
+  return balance >= 1;
+}
+
+function ChangeBalanceBy(balance, change = 1) {
+  // make sure that 1 + 1 and not 1 + "1" (= 11)
+  return balance + change;
 }
 
 const element = document.getElementById('playBtn');
 element.addEventListener('click', function () {
+  const balance = Number(document.getElementById('balance').innerHTML);
   if (canRoll && HaveBalance(balance)) {
     canRoll = false;
-    balance -= 1;
-    console.log(balance)
+    document.getElementById('balance').innerHTML = ChangeBalanceBy(balance, -1);
     let reels = [];
     reels.push(document.getElementById('reel0'));
     reels.push(document.getElementById('reel1'));
@@ -82,11 +139,6 @@ element.addEventListener('click', function () {
     console.log('Reels rolling');
 
     reels.forEach((element) => {
-
-      const degreesToRotateInOneRoll = 180;
-
-      const faces = 12;
-
       const rotation_target = RotateTo({
         fromRotation: element.object3D.rotation.x,
         degreesToRotate: degreesToRotateInOneRoll,
@@ -94,21 +146,18 @@ element.addEventListener('click', function () {
 
       const currentlyFacing = GetFaceFromRotation({
         quaternion: element.object3D.quaternion,
-        faces: faces,
-        furtherRotation: 0,
       });
 
-      const willFaceNext = GetFaceFromRotation({
-        quaternion: element.object3D.quaternion,
-        faces: faces,
-        furtherRotation: degreesToRotateInOneRoll,
+      const currentlyHiddenFaces = GetHiddenFacesFrom({
+        face: currentlyFacing,
       });
-
-      const currentlyHiddenFaces = GetHiddenFacesFrom({face: currentlyFacing});
 
       for (const face of currentlyHiddenFaces) {
+        const textureKey = RandomKeyFrom(texturePool);
         element.getObject3D('mesh').children[face].material.map =
-          RandomPropertyFrom(texturePool);
+          texturePool[textureKey];
+        element.getObject3D('mesh').children[face].material.map.name =
+          textureKey;
       }
 
       // Trigger animation
