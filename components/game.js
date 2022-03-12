@@ -142,6 +142,19 @@ function WhichReel(element) {
   }
 }
 
+function DrawNextLine(isAutowin) {
+  if (isAutowin) {
+    const textureKey = RandomKeyFrom(texturePool);
+    return [textureKey, textureKey, textureKey];
+  } else {
+    return [
+      RandomKeyFrom(texturePool),
+      RandomKeyFrom(texturePool),
+      RandomKeyFrom(texturePool),
+    ];
+  }
+}
+
 const element = document.getElementById('playBtn');
 element.addEventListener('click', function () {
   const isAutowin = document.getElementById('autowin').checked;
@@ -156,10 +169,7 @@ element.addEventListener('click', function () {
     let delay = 0;
     console.log('Reels rolling');
 
-    let nextLineShouldBe = 'random';
-    if (isAutowin) {
-      nextLineShouldBe = ['Q', 'Q', 'Q'];
-    }
+    const nextLineShouldBe = DrawNextLine(isAutowin);
 
     reels.forEach((element) => {
       const rotation_target = RotateTo({
@@ -175,25 +185,18 @@ element.addEventListener('click', function () {
         face: currentlyFacing,
       });
 
-      for (const face of currentlyHiddenFaces) {
-        const textureKey = RandomKeyFrom(texturePool);
-        element.getObject3D('mesh').children[face].material.map =
-          texturePool[textureKey];
-        element.getObject3D('mesh').children[face].material.map.name =
-          textureKey;
-      }
-
-      // pick next line from predetermined pool of choices
       const willBeFacing =
-        (currentlyFacing + ( degreesToRotateInOneRoll / (360 / 12)) ) % 12;
+        (currentlyFacing + degreesToRotateInOneRoll / (360 / 12)) % 12;
 
-      if (nextLineShouldBe != 'random') {
-        const whichReel = WhichReel(element);
-        const lineItem = nextLineShouldBe[whichReel];
-        element.getObject3D('mesh').children[willBeFacing].material.map =
+      for (const face of currentlyHiddenFaces) {
+        let lineItem = RandomKeyFrom(texturePool);
+        if (face === willBeFacing) {
+          const whichReel = WhichReel(element);
+          lineItem = nextLineShouldBe[whichReel];
+        }
+        element.getObject3D('mesh').children[face].material.map =
           texturePool[lineItem];
-        element.getObject3D('mesh').children[willBeFacing].material.map.name =
-          lineItem;
+        element.getObject3D('mesh').children[face].material.map.name = lineItem;
       }
 
       // Trigger animation
