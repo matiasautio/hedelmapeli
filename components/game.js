@@ -85,13 +85,13 @@ function CheckIfWin() {
 
   if (currentWin > 0) {
     DisablePlayButton();
-    const splashText = document.getElementById('splashText');
-    splashText.object3D.visible = true;
-    splashText.setAttribute('text', 'value: ' + 0);
-    splashText.setAttribute('text', 'opacity: ' + 1);
-    splashText.setAttribute('animation__2', 'to: ' + currentWin);
-    splashText.emit('startWinAnim', null, false);
-    splashText.emit('startWinCounterAnim', null, false);
+    const winSplash = document.getElementById('winSplash');
+    winSplash.object3D.visible = true;
+    winSplash.setAttribute('text', 'value: ' + 0);
+    winSplash.setAttribute('text', 'opacity: ' + 1);
+    winSplash.setAttribute('animation__counter', 'to: ' + currentWin);
+    winSplash.emit('startWinSplashFade', null, false);
+    winSplash.emit('startWinSplashCounter', null, false);
   } else {
     EnablePlayButton();
   }
@@ -213,7 +213,7 @@ function AddLastReelAnimationEventListener() {
 }
 
 function IsAnimationCounterAnimation(e) {
-  return e.detail.name === 'animation__2';
+  return e.detail.name === 'animation__counter';
 }
 
 function AddWinToBalance() {
@@ -228,8 +228,8 @@ function EndRoll() {
 }
 
 function AddWinCounterAnimationEventListener() {
-  const splashText = document.getElementById('splashText');
-  splashText.addEventListener('animationcomplete', function (e) {
+  const winSplash = document.getElementById('winSplash');
+  winSplash.addEventListener('animationcomplete', function (e) {
     if (IsAnimationCounterAnimation(e)) {
       EndRoll();
     }
