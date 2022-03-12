@@ -1,4 +1,3 @@
-let canRoll = true;
 const degreesToRotateInOneRoll = 180;
 
 const texturePool = {
@@ -77,7 +76,7 @@ function CheckIfWin() {
   }
 
   if (maxWin > 0) {
-    canRoll = false;
+    DisablePlayButton()
     const splashText = document.getElementById('splashText');
     splashText.object3D.visible = true;
     splashText.setAttribute('text', 'value: ' + 0);
@@ -86,27 +85,8 @@ function CheckIfWin() {
     splashText.emit('startWinAnim', null, false);
     splashText.emit('startWinCounterAnim', null, false);
   } else {
-    canRoll = true;
+    EnablePlayButton()
   }
-}
-
-function lastReelEventListener() {
-  const lastReel = document.getElementById('reel2');
-  lastReel.addEventListener('animationcomplete', function () {
-    CheckIfWin();
-  });
-
-  const splashText = document.getElementById('splashText');
-  splashText.addEventListener('animationcomplete', function (e) {
-    if (e.detail.name === 'animation__2') {
-      const balance = Number(document.getElementById('balance').innerHTML);
-      document.getElementById('balance').innerHTML = ChangeBalanceBy(
-        balance,
-        maxWin
-      );
-      canRoll = true;
-    }
-  });
 }
 
 function RotateTo({ fromRotation, degreesToRotate }) {
@@ -166,61 +146,121 @@ function DrawNextLine(isAutowin) {
   }
 }
 
-const element = document.getElementById('playBtn');
-element.addEventListener('click', function () {
+function Roll(isAutowin) {
+  let reels = [];
+  reels.push(document.getElementById('reel0'));
+  reels.push(document.getElementById('reel1'));
+  reels.push(document.getElementById('reel2'));
+  let delay = 0;
+
+  const nextLineShouldBe = DrawNextLine(isAutowin);
+
+  reels.forEach((element) => {
+    const rotation_target = RotateTo({
+      fromRotation: element.object3D.rotation.x,
+      degreesToRotate: degreesToRotateInOneRoll,
+    });
+
+    const currentlyFacing = GetFaceFromRotation({
+      quaternion: element.object3D.quaternion,
+    });
+
+    const currentlyHiddenFaces = GetHiddenFacesFrom({
+      face: currentlyFacing,
+    });
+
+    const willBeFacing =
+      (currentlyFacing + degreesToRotateInOneRoll / (360 / 12)) % 12;
+
+    for (const face of currentlyHiddenFaces) {
+      let lineItem = RandomKeyFrom(texturePool);
+      if (face === willBeFacing) {
+        const whichReel = WhichReel(element);
+        lineItem = nextLineShouldBe[whichReel];
+      }
+      element.getObject3D('mesh').children[face].material.map =
+        texturePool[lineItem];
+      element.getObject3D('mesh').children[face].material.map.name = lineItem;
+    }
+
+    // Trigger animation
+    element.setAttribute(
+      'animation',
+      'property: rotation; to: ' +
+        rotation_target +
+        ' 0 0; delay: ' +
+        delay +
+        ''
+    );
+
+    delay += 200;
+  });
+}
+
+function AddLastReelAnimationEventListener() {
+  const lastReel = document.getElementById('reel2');
+  lastReel.addEventListener('animationcomplete', function () {
+    CheckIfWin();
+  });
+}
+
+function IsAnimationCounterAnimation(e) {
+  return e.detail.name === 'animation__2';
+}
+
+function AddWinToBalance() {
+  const balance = Number(document.getElementById('balance').innerHTML);
+  document.getElementById('balance').innerHTML = ChangeBalanceBy(
+    balance,
+    maxWin
+  );
+}
+
+function DisablePlayButton() {
+  document.getElementById('playBtn').disabled = true;
+}
+
+function EnablePlayButton() {
+  document.getElementById('playBtn').disabled = false;
+}
+
+function EndRoll() {
+  AddWinToBalance();
+  EnablePlayButton();
+}
+
+function AddWinCounterAnimationEventListener() {
+  const splashText = document.getElementById('splashText');
+  splashText.addEventListener('animationcomplete', function (e) {
+    if (IsAnimationCounterAnimation(e)) {
+      EndRoll();
+    }
+  });
+}
+
+function DeductFeeFromBalance(balance) {
+  document.getElementById('balance').innerHTML = balance - 1;
+}
+
+function AttemptRoll() {
   const isAutowin = document.getElementById('autowin').checked;
   const balance = Number(document.getElementById('balance').innerHTML);
-  if (canRoll && HaveBalance(balance)) {
-    canRoll = false;
-    document.getElementById('balance').innerHTML = ChangeBalanceBy(balance, -1);
-    let reels = [];
-    reels.push(document.getElementById('reel0'));
-    reels.push(document.getElementById('reel1'));
-    reels.push(document.getElementById('reel2'));
-    let delay = 0;
-    console.log('Reels rolling');
-
-    const nextLineShouldBe = DrawNextLine(isAutowin);
-
-    reels.forEach((element) => {
-      const rotation_target = RotateTo({
-        fromRotation: element.object3D.rotation.x,
-        degreesToRotate: degreesToRotateInOneRoll,
-      });
-
-      const currentlyFacing = GetFaceFromRotation({
-        quaternion: element.object3D.quaternion,
-      });
-
-      const currentlyHiddenFaces = GetHiddenFacesFrom({
-        face: currentlyFacing,
-      });
-
-      const willBeFacing =
-        (currentlyFacing + degreesToRotateInOneRoll / (360 / 12)) % 12;
-
-      for (const face of currentlyHiddenFaces) {
-        let lineItem = RandomKeyFrom(texturePool);
-        if (face === willBeFacing) {
-          const whichReel = WhichReel(element);
-          lineItem = nextLineShouldBe[whichReel];
-        }
-        element.getObject3D('mesh').children[face].material.map =
-          texturePool[lineItem];
-        element.getObject3D('mesh').children[face].material.map.name = lineItem;
-      }
-
-      // Trigger animation
-      element.setAttribute(
-        'animation',
-        'property: rotation; to: ' +
-          rotation_target +
-          ' 0 0; delay: ' +
-          delay +
-          ''
-      );
-
-      delay += 200;
-    });
+  if (HaveBalance(balance)) {
+    DisablePlayButton()
+    DeductFeeFromBalance(balance);
+    Roll(isAutowin);
   }
-});
+}
+
+function AddPlayButtonEventListener() {
+  const element = document.getElementById('playBtn');
+  element.addEventListener('click', function () {
+    AttemptRoll();
+  });
+}
+
+function AddEventListeners() {
+  AddLastReelAnimationEventListener();
+  AddWinCounterAnimationEventListener();
+  AddPlayButtonEventListener();
+}
