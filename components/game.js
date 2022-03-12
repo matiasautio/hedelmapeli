@@ -37,6 +37,17 @@ AFRAME.registerComponent('reorderobjectcchildren', {
   },
 });
 
+// Change colors to greys
+function toggleGreyscaleFilter() {
+  if ( document.getElementById("grayscale").checked == true){
+    document.body.style.filter = "grayscale(100%)"
+    console.log("grey off");
+  } else {
+    document.body.style.filter = "";
+    console.log("grey off");
+  }
+}
+
 function GetCurrentLine() {
   const reels = [
     document.getElementById('reel0'),
