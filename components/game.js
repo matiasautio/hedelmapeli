@@ -92,6 +92,7 @@ function CheckIfWin() {
     winSplash.setAttribute('animation__counter', 'to: ' + currentWin);
     winSplash.emit('startWinSplashFade', null, false);
     winSplash.emit('startWinSplashCounter', null, false);
+    winSplash.components.sound.playSound();
   } else {
     EnablePlayButton();
   }
@@ -145,6 +146,8 @@ function TurnReel({ element, turn, delay }) {
       duration +
       ';'
   );
+
+  element.components.sound.playSound();
 }
 
 function ChangeHiddenFaceTextures({ element, willTurn, nextFaceTexture }) {

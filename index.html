@@ -10,13 +10,15 @@
   <a-scene inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" style="z-index: 0; position: absolute;">
     <a-assets>
       <a-asset-item id="reel" src="./3D_assets/reel_separated_faces.glb"></a-asset-item>
+      <audio id="coin" src="sounds/smw_coin.wav" preload="auto"></audio>
+      <audio id="spin" src="sounds/smw_stomp.wav" preload="auto"></audio>
     </a-assets>
     <a-camera fov="50" position="0 1.5 0" wasd-controls-enabled="enabled" look-controls-enabled="enabled"></a-camera>
     <a-sky color="#ECECEC" material="" geometry=""></a-sky>
-    <a-entity id="reel0" gltf-model="#reel" position="-0.3 1.5 -3" rotation="0 0 0" animation="property: rotation; to: 0 0 0; easing: linear; loop: false" reorderobjectcchildren></a-entity>
-    <a-entity id="reel1" gltf-model="#reel" position="0 1.5 -3" rotation="0 0 0" animation="property: rotation; to: 0 0 0; easing: linear; loop: false" reorderobjectcchildren></a-entity>
-    <a-entity id="reel2" gltf-model="#reel" position="0.3 1.5 -3" rotation="0 0 0" animation="property: rotation; to: 0 0 0; easing: linear; loop: false" reorderobjectcchildren></a-entity>
-    <a-entity id="winSplash" visible="false" text="value: 0; color: #000; align:  center;" position="0 1.63 -0.5"
+    <a-entity id="reel0" gltf-model="#reel" position="-0.3 1.5 -3" rotation="0 0 0" sound="src: #spin; poolSize: 3;" animation="property: rotation; to: 0 0 0; easing: linear; loop: false" reorderobjectcchildren></a-entity>
+    <a-entity id="reel1" gltf-model="#reel" position="0 1.5 -3" rotation="0 0 0" sound="src: #spin; poolSize: 3;" animation="property: rotation; to: 0 0 0; easing: linear; loop: false" reorderobjectcchildren></a-entity>
+    <a-entity id="reel2" gltf-model="#reel" position="0.3 1.5 -3" rotation="0 0 0" sound="src: #spin; poolSize: 3;" animation="property: rotation; to: 0 0 0; easing: linear; loop: false" reorderobjectcchildren></a-entity>
+    <a-entity id="winSplash" visible="false" text="value: 0; color: #000; align:  center;" position="0 1.63 -0.5" sound="src: #coin;"
       animation__fade="property: text.opacity; to: 0; easing: easeInExpo; dur: 100; delay: 2000; startEvents: startWinSplashFade;"
       animation__counter="property: text.value; round: 1; easing: easeOutExpo; dur: 2000; startEvents: startWinSplashCounter;"
     ></a-entity>
