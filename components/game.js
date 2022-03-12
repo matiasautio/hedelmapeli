@@ -1,3 +1,4 @@
+let currentWin = 0;
 const degreesToRotateInOneRoll = 180;
 
 const texturePool = {
@@ -56,6 +57,14 @@ function GetCurrentLine() {
   return currentLine;
 }
 
+function DisablePlayButton() {
+  document.getElementById('playBtn').disabled = true;
+}
+
+function EnablePlayButton() {
+  document.getElementById('playBtn').disabled = false;
+}
+
 function CheckIfWin() {
   currentLine = GetCurrentLine().join('');
 
@@ -66,26 +75,25 @@ function CheckIfWin() {
     { line: 'KKK', win: 8 },
   ];
 
-  maxWin = 0;
   for (const winLine of winTable) {
     if (winLine.line === currentLine) {
-      if (winLine.win > maxWin) {
-        maxWin = winLine.win;
+      if (winLine.win > currentWin) {
+        currentWin = winLine.win;
       }
     }
   }
 
-  if (maxWin > 0) {
-    DisablePlayButton()
+  if (currentWin > 0) {
+    DisablePlayButton();
     const splashText = document.getElementById('splashText');
     splashText.object3D.visible = true;
     splashText.setAttribute('text', 'value: ' + 0);
     splashText.setAttribute('text', 'opacity: ' + 1);
-    splashText.setAttribute('animation__2', 'to: ' + maxWin);
+    splashText.setAttribute('animation__2', 'to: ' + currentWin);
     splashText.emit('startWinAnim', null, false);
     splashText.emit('startWinCounterAnim', null, false);
   } else {
-    EnablePlayButton()
+    EnablePlayButton();
   }
 }
 
@@ -210,18 +218,8 @@ function IsAnimationCounterAnimation(e) {
 
 function AddWinToBalance() {
   const balance = Number(document.getElementById('balance').innerHTML);
-  document.getElementById('balance').innerHTML = ChangeBalanceBy(
-    balance,
-    maxWin
-  );
-}
-
-function DisablePlayButton() {
-  document.getElementById('playBtn').disabled = true;
-}
-
-function EnablePlayButton() {
-  document.getElementById('playBtn').disabled = false;
+  document.getElementById('balance').innerHTML = balance + currentWin;
+  currentWin = 0;
 }
 
 function EndRoll() {
@@ -246,7 +244,7 @@ function AttemptRoll() {
   const isAutowin = document.getElementById('autowin').checked;
   const balance = Number(document.getElementById('balance').innerHTML);
   if (HaveBalance(balance)) {
-    DisablePlayButton()
+    DisablePlayButton();
     DeductFeeFromBalance(balance);
     Roll(isAutowin);
   }
