@@ -1,5 +1,4 @@
 let currentWin = 0;
-const degreesToRotateInOneRoll = 180;
 
 const texturePool = {
   T: new THREE.TextureLoader().load('2D_assets/T.png'),
@@ -39,10 +38,11 @@ AFRAME.registerComponent('reorderobjectcchildren', {
 });
 
 function GetCurrentLine() {
-  let reels = [];
-  reels.push(document.getElementById('reel0'));
-  reels.push(document.getElementById('reel1'));
-  reels.push(document.getElementById('reel2'));
+  const reels = [
+    document.getElementById('reel0'),
+    document.getElementById('reel1'),
+    document.getElementById('reel2'),
+  ];
 
   const currentLine = reels.map((element) => {
     const currentlyFacing = GetFaceFromRotation({
@@ -97,11 +97,6 @@ function CheckIfWin() {
   }
 }
 
-function RotateTo({ fromRotation, degreesToRotate }) {
-  const rotation = THREE.Math.radToDeg(fromRotation) + degreesToRotate;
-  return rotation;
-}
-
 function GetFaceFromRotation({ quaternion, faces = 12 }) {
   const euler = new THREE.Euler(0, 0, 0);
   euler.setFromQuaternion(quaternion);
@@ -122,22 +117,35 @@ function GetHiddenFacesFrom({ face, initiallyHidden = [3, 4, 5, 6, 7, 8, 9] }) {
   return hiddenFaces;
 }
 
-function HaveBalance(balance) {
-  return balance >= 1;
+function TurnReel({ element, turn, delay }) {
+  const rotation_target =
+    THREE.Math.radToDeg(element.object3D.rotation.x) + (turn * 360) / 12;
+
+  element.setAttribute(
+    'animation',
+    'property: rotation; to: ' + rotation_target + ' 0 0; delay: ' + delay + ''
+  );
 }
 
-function ChangeBalanceBy(balance, change = 1) {
-  // make sure that 1 + 1 and not 1 + "1" (= 11)
-  return balance + change;
-}
+function ChangeHiddenFaceTextures({ element, willTurn, nextFaceTexture }) {
+  const currentlyFacing = GetFaceFromRotation({
+    quaternion: element.object3D.quaternion,
+  });
 
-function WhichReel(element) {
-  if (element.id === 'reel0') {
-    return 0;
-  } else if (element.id === 'reel1') {
-    return 1;
-  } else if (element.id === 'reel2') {
-    return 2;
+  const currentlyHiddenFaces = GetHiddenFacesFrom({
+    face: currentlyFacing,
+  });
+
+  const willBeFacing = (currentlyFacing + willTurn) % 12;
+
+  for (const face of currentlyHiddenFaces) {
+    let lineItem = RandomKeyFrom(texturePool);
+    if (face === willBeFacing) {
+      lineItem = nextFaceTexture;
+    }
+    element.getObject3D('mesh').children[face].material.map =
+      texturePool[lineItem];
+    element.getObject3D('mesh').children[face].material.map.name = lineItem;
   }
 }
 
@@ -155,53 +163,37 @@ function DrawNextLine(isAutowin) {
 }
 
 function Roll(isAutowin) {
-  let reels = [];
-  reels.push(document.getElementById('reel0'));
-  reels.push(document.getElementById('reel1'));
-  reels.push(document.getElementById('reel2'));
-  let delay = 0;
-
   const nextLineShouldBe = DrawNextLine(isAutowin);
 
-  reels.forEach((element) => {
-    const rotation_target = RotateTo({
-      fromRotation: element.object3D.rotation.x,
-      degreesToRotate: degreesToRotateInOneRoll,
+  let delay = 0;
+
+  const reels = [
+    document.getElementById('reel0'),
+    document.getElementById('reel1'),
+    document.getElementById('reel2'),
+  ];
+
+  const facesForReelsToTurn = [6, 6, 6];
+
+  const turnAnimationDelays = [0, 200, 400];
+
+  reels.forEach((element, index) => {
+    const facesToTurn = facesForReelsToTurn[index];
+    const nextFaceTexture = nextLineShouldBe[index];
+
+    ChangeHiddenFaceTextures({
+      element: element,
+      willTurn: facesToTurn,
+      nextFaceTexture: nextFaceTexture,
     });
 
-    const currentlyFacing = GetFaceFromRotation({
-      quaternion: element.object3D.quaternion,
+    const delay = turnAnimationDelays[index];
+
+    TurnReel({
+      element: element,
+      turn: facesToTurn,
+      delay: delay,
     });
-
-    const currentlyHiddenFaces = GetHiddenFacesFrom({
-      face: currentlyFacing,
-    });
-
-    const willBeFacing =
-      (currentlyFacing + degreesToRotateInOneRoll / (360 / 12)) % 12;
-
-    for (const face of currentlyHiddenFaces) {
-      let lineItem = RandomKeyFrom(texturePool);
-      if (face === willBeFacing) {
-        const whichReel = WhichReel(element);
-        lineItem = nextLineShouldBe[whichReel];
-      }
-      element.getObject3D('mesh').children[face].material.map =
-        texturePool[lineItem];
-      element.getObject3D('mesh').children[face].material.map.name = lineItem;
-    }
-
-    // Trigger animation
-    element.setAttribute(
-      'animation',
-      'property: rotation; to: ' +
-        rotation_target +
-        ' 0 0; delay: ' +
-        delay +
-        ''
-    );
-
-    delay += 200;
   });
 }
 
@@ -238,6 +230,10 @@ function AddWinCounterAnimationEventListener() {
 
 function DeductFeeFromBalance(balance) {
   document.getElementById('balance').innerHTML = balance - 1;
+}
+
+function HaveBalance(balance) {
+  return balance >= 1;
 }
 
 function AttemptRoll() {
