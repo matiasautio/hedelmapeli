@@ -16,7 +16,10 @@
     <a-entity id="reel0" gltf-model="#reel" position="-0.3 1.5 -3" rotation="0 0 0" animation="property: rotation; to: 0 0 0; dur: 2000; easing: linear; loop: false" reorderobjectcchildren></a-entity>
     <a-entity id="reel1" gltf-model="#reel" position="0 1.5 -3" rotation="0 0 0" animation="property: rotation; to: 0 0 0; dur: 2000; easing: linear; loop: false" reorderobjectcchildren></a-entity>
     <a-entity id="reel2" gltf-model="#reel" position="0.3 1.5 -3" rotation="0 0 0" animation="property: rotation; to: 0 0 0; dur: 2000; easing: linear; loop: false" reorderobjectcchildren></a-entity>
-    <a-entity id="splashText" visible="false" text="value: 1000; color: #000; align:  center;" position="0 1.63 -0.5" animation="property: text.opacity; from: 1; to: 0; dur: 1000; startEvents: startWinAnim;" ></a-entity>
+    <a-entity id="splashText" visible="false" text="value: 0; color: #000; align:  center;" position="0 1.63 -0.5"
+      animation="property: text.opacity; to: 0; easing: easeInExpo; dur: 100; delay: 2000; startEvents: startWinAnim;"
+      animation__2="property: text.value; round: 1; easing: easeOutExpo; dur: 2000; startEvents: startWinCounterAnim;"
+    ></a-entity>
     <div class="a-loader-title" style="display: none;"></div>
   </a-scene>
   <div class="container">

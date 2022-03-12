@@ -77,16 +77,16 @@ function CheckIfWin() {
   }
 
   if (maxWin > 0) {
+    canRoll = false;
     const splashText = document.getElementById('splashText');
-    splashText.setAttribute('text', 'value: ' + maxWin);
     splashText.object3D.visible = true;
+    splashText.setAttribute('text', 'value: ' + 0);
+    splashText.setAttribute('text', 'opacity: ' + 1);
+    splashText.setAttribute('animation__2', 'to: ' + maxWin);
     splashText.emit('startWinAnim', null, false);
-
-    const balance = Number(document.getElementById('balance').innerHTML);
-    document.getElementById('balance').innerHTML = ChangeBalanceBy(
-      balance,
-      maxWin
-    );
+    splashText.emit('startWinCounterAnim', null, false);
+  } else {
+    canRoll = true;
   }
 }
 
@@ -94,7 +94,18 @@ function lastReelEventListener() {
   const lastReel = document.getElementById('reel2');
   lastReel.addEventListener('animationcomplete', function () {
     CheckIfWin();
-    canRoll = true;
+  });
+
+  const splashText = document.getElementById('splashText');
+  splashText.addEventListener('animationcomplete', function (e) {
+    if (e.detail.name === 'animation__2') {
+      const balance = Number(document.getElementById('balance').innerHTML);
+      document.getElementById('balance').innerHTML = ChangeBalanceBy(
+        balance,
+        maxWin
+      );
+      canRoll = true;
+    }
   });
 }
 
