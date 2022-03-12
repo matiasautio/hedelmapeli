@@ -66,7 +66,7 @@ function EnablePlayButton() {
 }
 
 function CheckIfWin() {
-  currentLine = GetCurrentLine().join('');
+  const currentLine = GetCurrentLine().join('');
 
   const winTable = [
     { line: 'TTT', win: 2 },
@@ -117,13 +117,33 @@ function GetHiddenFacesFrom({ face, initiallyHidden = [3, 4, 5, 6, 7, 8, 9] }) {
   return hiddenFaces;
 }
 
+function GetDuration() {
+  const shouldMultiplyDuration = document.getElementById('fastspin').checked;
+  const duration = 2000;
+  if (shouldMultiplyDuration) {
+    return duration * 0.3;
+  } else {
+    return duration;
+  }
+}
+
 function TurnReel({ element, turn, delay }) {
   const rotation_target =
     THREE.Math.radToDeg(element.object3D.rotation.x) + (turn * 360) / 12;
 
+  const duration = GetDuration();
+
   element.setAttribute(
     'animation',
-    'property: rotation; to: ' + rotation_target + ' 0 0; delay: ' + delay + ''
+    'property: rotation; to: ' +
+      rotation_target +
+      ' 0 0; \
+    delay: ' +
+      delay +
+      '; \
+    dur: ' +
+      duration +
+      ';'
   );
 }
 
