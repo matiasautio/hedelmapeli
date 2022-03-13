@@ -281,6 +281,8 @@ function SetBonusStage() {
   reel0.emit('startSetBonusStage', null, false);
   const reel2 = document.getElementById('reel2');
   reel2.emit('startSetBonusStage', null, false);
+  const reel1 = document.getElementById('reel1');
+  reel1.emit('startSetBonusStage', null, false);
 }
 
 function PlayBonus() {
