@@ -31,11 +31,13 @@
     <div id="menuButton" class="menuButton">
         <img src="2D_assets/menu_icon.svg" alt="Menu SVG" />
     </div>
-    <div id="menu" class="container">
-        <div style="text-align: right; font-size: 2em;" id="balance">5</div>
+    <div class="rollButton">
         <div class="center">
             <button type="button" id="playBtn">ROLL REELS</button>
         </div>
+    </div>
+    <div id="menu" class="container">
+        <div style="text-align: right; font-size: 2em;" id="balance">5</div>
         <div style="text-align: left">
             <p>Choose slot features:</p>
             <div><input type="checkbox" id="autowin" autocomplete="off" /> <label for="autowin">Sure win</label></div>
@@ -43,6 +45,7 @@
             <div><input type="checkbox" id="grayscale" autocomplete="off" onclick=toggleGreyscaleFilter() /> <label for="grayscale">No colors</label></div>
             <div><input type="checkbox" id="autobonus" autocomplete="off" /> <label for="autobonus">Sure Bonus</label></div>
         </div>
+    </div>
 </body>
 
 </html>
