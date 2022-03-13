@@ -358,7 +358,7 @@ function AddPlayButtonEventListener() {
     });
 }
 
-function AddPlayButtonEventListener() {
+function AddMenuButtonEventListener() {
     const element = document.getElementById('menuButton');
     element.addEventListener('click', function() {
         ToggleMenu();
