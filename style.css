@@ -22,10 +22,10 @@
     width: 80vw;
     left: 10vw;
     position: absolute;
-    border: 3px solid green;
+    /*border: 3px solid green;
+    background-color: white;*/
     z-index: 1;
     bottom: 25%;
-    background-color: white;
 }
 
 .center {
