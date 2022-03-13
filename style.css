@@ -8,6 +8,13 @@
     bottom: 10%;
 }
 
+.menuButton {
+    left: 10vw;
+    position: absolute;
+    z-index: 1;
+    bottom: 10%;
+}
+
 .center {
     margin: 0;
     position: absolute;
