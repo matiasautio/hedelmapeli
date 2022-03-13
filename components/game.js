@@ -5,6 +5,7 @@ const texturePool = {
   J: new THREE.TextureLoader().load('2D_assets/J.png'),
   Q: new THREE.TextureLoader().load('2D_assets/Q.png'),
   K: new THREE.TextureLoader().load('2D_assets/K.png'),
+  W: new THREE.TextureLoader().load('2D_assets/W.png'),
 };
 
 function RandomKeyFrom(obj) {
@@ -37,14 +38,11 @@ AFRAME.registerComponent('reorderobjectcchildren', {
   },
 });
 
-// Change colors to greys
 function toggleGreyscaleFilter() {
-  if ( document.getElementById("grayscale").checked == true){
-    document.body.style.filter = "grayscale(100%)"
-    console.log("grey off");
+  if (document.getElementById('grayscale').checked == true) {
+    document.body.style.filter = 'grayscale(100%)';
   } else {
-    document.body.style.filter = "";
-    console.log("grey off");
+    document.body.style.filter = '';
   }
 }
 
@@ -76,18 +74,40 @@ function EnablePlayButton() {
   document.getElementById('playBtn').disabled = false;
 }
 
+function TransformWildsToWin({ lineWithWilds, replaceWildsWith }) {
+  // for letter in lineWithWilds, if W then replace by letter in replaceWildsWith
+  let transformed = '';
+  for (var i = 0; i < lineWithWilds.length; i++) {
+    if (lineWithWilds.charAt(i) === 'W') {
+      transformed += replaceWildsWith.charAt(i);
+    } else {
+      transformed += lineWithWilds.charAt(i);
+    }
+  }
+  return transformed;
+}
+
 function CheckIfWin() {
   const currentLine = GetCurrentLine().join('');
+
+  if (currentLine === '') {
+    return;
+  }
 
   const winTable = [
     { line: 'TTT', win: 2 },
     { line: 'JJJ', win: 4 },
     { line: 'QQQ', win: 8 },
     { line: 'KKK', win: 8 },
+    { line: 'WWW', win: 16 },
   ];
 
   for (const winLine of winTable) {
-    if (winLine.line === currentLine) {
+    const currentLineWildsTransformed = TransformWildsToWin({
+      lineWithWilds: currentLine,
+      replaceWildsWith: winLine.line,
+    });
+    if (winLine.line === currentLineWildsTransformed) {
       if (winLine.win > currentWin) {
         currentWin = winLine.win;
       }
