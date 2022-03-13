@@ -1,5 +1,23 @@
-let currentWin = 0;
-let isBonusOngoing = 0;
+const game = {
+  status: 'READY', // READY, ROLLING, STOPPED, PAYINGWINS, UPCOMINGBONUS, BONUS
+  optionsNextRoll: { autoWin: false, autoBonus: false },
+  pendingWins: 0,
+  balance: 5,
+  reelInfoById: {
+    reel0: {
+      now: { centerFaceIndex: 0, n: 12, hidden: [3, 4, 5, 6, 7, 8, 9] },
+      next: { centerFaceIndex: 0, n: 0, hidden: [0, 0, 0, 0, 0, 0, 0] },
+    },
+    reel1: {
+      now: { centerFaceIndex: 0, n: 12, hidden: [3, 4, 5, 6, 7, 8, 9] },
+      next: { centerFaceIndex: 0, n: 0, hidden: [0, 0, 0, 0, 0, 0, 0] },
+    },
+    reel2: {
+      now: { centerFaceIndex: 0, n: 12, hidden: [3, 4, 5, 6, 7, 8, 9] },
+      next: { centerFaceIndex: 0, n: 0, hidden: [0, 0, 0, 0, 0, 0, 0] },
+    },
+  },
+};
 
 const texturePool = {
   T: new THREE.TextureLoader().load('2D_assets/T.png'),
@@ -56,9 +74,7 @@ function GetCurrentLine() {
   ];
 
   const currentLine = reels.map((element) => {
-    const currentlyFacing = GetFaceFromRotation({
-      quaternion: element.object3D.quaternion,
-    });
+    const currentlyFacing = game.reelInfoById[element.id].now.centerFaceIndex;
 
     const symbol =
       element.getObject3D('mesh').children[currentlyFacing].material.map.name;
@@ -89,7 +105,7 @@ function TransformWildsToWin({ lineWithWilds, replaceWildsWith }) {
   return transformed;
 }
 
-function CheckIfWin() {
+function EvaluateWins() {
   const currentLine = GetCurrentLine().join('');
 
   if (currentLine === '') {
@@ -104,54 +120,36 @@ function CheckIfWin() {
     { line: 'WWW', win: 16 },
   ];
 
+  let max = 0;
   for (const winLine of winTable) {
     const currentLineWildsTransformed = TransformWildsToWin({
       lineWithWilds: currentLine,
       replaceWildsWith: winLine.line,
     });
     if (winLine.line === currentLineWildsTransformed) {
-      if (winLine.win > currentWin) {
-        currentWin = winLine.win;
+      if (winLine.win > max) {
+        max = winLine.win;
       }
     }
   }
+  game.pendingWins += max;
 
-  if (currentWin > 0) {
+  if (game.pendingWins > 0) {
+    game.status = "PAYINGWINS";
     DisablePlayButton();
     const winSplash = document.getElementById('winSplash');
     winSplash.object3D.visible = true;
     winSplash.setAttribute('text', 'value: ' + 0);
     winSplash.setAttribute('text', 'opacity: ' + 1);
-    winSplash.setAttribute('animation__counter', 'to: ' + currentWin);
+    winSplash.setAttribute('animation__counter', 'to: ' + game.pendingWins);
     winSplash.emit('startWinSplashFade', null, false);
     winSplash.emit('startWinSplashCounter', null, false);
     winSplash.components.sound.playSound();
-  } else {
-    CheckIfBonus();
-    if (isBonusOngoing != 1) {
-      EnablePlayButton();
-    }
-  }
-}
-
-function GetFaceFromRotation({ quaternion, faces = 12 }) {
-  const euler = new THREE.Euler(0, 0, 0);
-  euler.setFromQuaternion(quaternion);
-  let degree = Math.round(THREE.Math.radToDeg(euler.x));
-
-  if (degree < 0) {
-    degree += 360;
   }
 
-  const face = degree / (360 / faces);
-  return face;
-}
-
-function GetHiddenFacesFrom({ face, initiallyHidden = [3, 4, 5, 6, 7, 8, 9] }) {
-  const hiddenFaces = initiallyHidden.map(function (value) {
-    return (value + face) % 12;
-  });
-  return hiddenFaces;
+  if (currentLine === 'SSS') {
+    game.status = 'UPCOMINGBONUS';
+  }
 }
 
 function GetDuration() {
@@ -164,9 +162,25 @@ function GetDuration() {
   }
 }
 
+function StatusFromRollingToStopped() {
+  game.status = 'STOPPED';
+
+  const ids = ["reel0", "reel1", "reel2"]
+
+  for (id of ids) {
+    game.reelInfoById[id].now.centerFaceIndex = game.reelInfoById[id].next.centerFaceIndex;
+    game.reelInfoById[id].now.n = game.reelInfoById[id].next.n;
+    game.reelInfoById[id].now.hidden = game.reelInfoById[id].next.hidden;
+  }
+
+  EvaluateWins();
+}
+
 function TurnReel({ element, turn, delay }) {
+  const n = game.reelInfoById[element.id].now.n;
+
   const rotation_target =
-    THREE.Math.radToDeg(element.object3D.rotation.x) + (turn * 360) / 12;
+    THREE.Math.radToDeg(element.object3D.rotation.x) + (turn * 360) / n;
 
   const duration = GetDuration();
 
@@ -183,23 +197,21 @@ function TurnReel({ element, turn, delay }) {
       ';'
   );
 
+  element.emit('startNormalRoll', null, false);
+
   element.components.sound.playSound();
 }
 
-function ChangeHiddenFaceTextures({ element, willTurn, nextFaceTexture }) {
-  const currentlyFacing = GetFaceFromRotation({
-    quaternion: element.object3D.quaternion,
-  });
+function ChangeHiddenFaceTextures({ element, nextFaceTexture }) {
+  const hidden = game.reelInfoById[element.id].now.hidden;
+  const nextFacing = game.reelInfoById[element.id].next.centerFaceIndex;
 
-  const currentlyHiddenFaces = GetHiddenFacesFrom({
-    face: currentlyFacing,
-  });
+  console.log(game.reelInfoById[element.id].now.centerFaceIndex)
+  console.log(game.reelInfoById[element.id].now.hidden)
 
-  const willBeFacing = (currentlyFacing + willTurn) % 12;
-
-  for (const face of currentlyHiddenFaces) {
+  for (const face of hidden) {
     let lineItem = RandomKeyFrom(texturePool);
-    if (face === willBeFacing) {
+    if (face === nextFacing) {
       lineItem = nextFaceTexture;
     }
     element.getObject3D('mesh').children[face].material.map =
@@ -208,10 +220,10 @@ function ChangeHiddenFaceTextures({ element, willTurn, nextFaceTexture }) {
   }
 }
 
-function DrawNextLine({ isAutobonus: isAutobonus, isAutowin: isAutowin }) {
-  if (isAutobonus) {
+function DrawNextLine() {
+  if (game.optionsNextRoll.autoBonus) {
     return ['S', 'S', 'S'];
-  } else if (isAutowin) {
+  } else if (game.optionsNextRoll.autoWin) {
     const textureKey = RandomKeyFrom(texturePool);
     return [textureKey, textureKey, textureKey];
   } else {
@@ -223,13 +235,31 @@ function DrawNextLine({ isAutobonus: isAutobonus, isAutowin: isAutowin }) {
   }
 }
 
-function Roll({ isAutobonus: isAutobonus, isAutowin: isAutowin }) {
-  const nextLineShouldBe = DrawNextLine({
-    isAutobonus: isAutobonus,
-    isAutowin: isAutowin,
-  });
+function SetNextReelInfo(facesForReelsToTurn) {
+  facesForReelsToTurn.forEach((nudges, index) => {
+    const id = 'reel' + index;
 
-  let delay = 0;
+    game.reelInfoById[id].next.n = game.reelInfoById[id].now.n;
+
+    const nextCenterFaceIndex =
+      (game.reelInfoById[id].now.centerFaceIndex + nudges) %
+      game.reelInfoById[id].next.n;
+
+    game.reelInfoById[id].next.centerFaceIndex = nextCenterFaceIndex;
+
+    const hidden = game.reelInfoById[id].now.hidden;
+    const n = game.reelInfoById[id].now.n;
+    const nextHidden = hidden.map(function (value) {
+      return (value + nextCenterFaceIndex) % n;
+    });
+
+    game.reelInfoById[id].next.hidden = nextHidden;
+  });
+}
+
+function StatusFromReadyToRolling() {
+  game.status = 'ROLLING';
+  const nextLineShouldBe = DrawNextLine();
 
   const reels = [
     document.getElementById('reel0'),
@@ -238,6 +268,7 @@ function Roll({ isAutobonus: isAutobonus, isAutowin: isAutowin }) {
   ];
 
   const facesForReelsToTurn = [6, 6, 6];
+  SetNextReelInfo(facesForReelsToTurn);
 
   const turnAnimationDelays = [0, 200, 400];
 
@@ -247,7 +278,6 @@ function Roll({ isAutobonus: isAutobonus, isAutowin: isAutowin }) {
 
     ChangeHiddenFaceTextures({
       element: element,
-      willTurn: facesToTurn,
       nextFaceTexture: nextFaceTexture,
     });
 
@@ -261,30 +291,39 @@ function Roll({ isAutobonus: isAutobonus, isAutowin: isAutowin }) {
   });
 }
 
-function AddLastReelAnimationEventListener() {
+function AddLastReelAnimationsEventListener() {
   const lastReel = document.getElementById('reel2');
-  lastReel.addEventListener('animationcomplete', function () {
-    CheckIfWin();
+  lastReel.addEventListener('animationcomplete', function (e) {
+    if (e.detail.name === 'animation__movebehind') {
+      BonusRoll();
+      SetNormalStage();
+    } else if (e.detail.name === 'animation__movefront') {
+      game.status = 'READY';
+      EnablePlayButton();
+    } else {
+      StatusFromRollingToStopped();
+      if (game.status === 'UPCOMINGBONUS') {
+        StatusFromUpcomingBonusToBonus();
+      } else {
+        StatusFromStoppedToReady();
+      }
+    }
   });
 }
 
-function IsAnimationCounterAnimation(e) {
-  return e.detail.name === 'animation__counter';
-}
-
 function AddWinToBalance() {
-  const balance = Number(document.getElementById('balance').innerHTML);
-  document.getElementById('balance').innerHTML = balance + currentWin;
-  currentWin = 0;
+  game.balance += game.pendingWins;
+  document.getElementById('balance').innerHTML = game.balance;
+  game.pendingWins = 0;
 }
 
 function SetBonusStage() {
   const reel0 = document.getElementById('reel0');
   reel0.emit('startSetBonusStage', null, false);
-  const reel2 = document.getElementById('reel2');
-  reel2.emit('startSetBonusStage', null, false);
   const reel1 = document.getElementById('reel1');
   reel1.emit('startSetBonusStage', null, false);
+  const reel2 = document.getElementById('reel2');
+  reel2.emit('startSetBonusStage', null, false);
 }
 
 function BonusRoll() {
@@ -294,63 +333,47 @@ function BonusRoll() {
 function SetNormalStage() {
   const reel0 = document.getElementById('reel0');
   reel0.emit('startSetNormalStage', null, false);
-  const reel2 = document.getElementById('reel2');
-  reel2.emit('startSetNormalStage', null, false);
   const reel1 = document.getElementById('reel1');
   reel1.emit('startSetNormalStage', null, false);
+  const reel2 = document.getElementById('reel2');
+  reel2.emit('startSetNormalStage', null, false);
 }
 
-function PlayBonus() {
+function StatusFromStoppedToReady() {
+  EnablePlayButton();
+  game.status = 'READY';
+}
+
+function StatusFromUpcomingBonusToBonus() {
+  game.status = 'BONUS';
   SetBonusStage();
 }
 
-function CheckIfBonus() {
-  if (isBonusOngoing) {
-    return;
-  }
-  const currentLine = GetCurrentLine().join('');
-  console.log(currentLine);
-  if (currentLine === 'SSS') {
-    isBonusOngoing = 1;
-    DisablePlayButton();
-    PlayBonus();
-  }
+function DeductFeeFromBalance() {
+  game.balance -= 1;
+  document.getElementById('balance').innerHTML = game.balance;
 }
 
-function EndRoll() {
-  AddWinToBalance();
-  CheckIfBonus();
-  EnablePlayButton();
+function HaveBalance() {
+  return game.balance >= 1;
 }
 
-function AddWinCounterAnimationEventListener() {
-  const winSplash = document.getElementById('winSplash');
-  winSplash.addEventListener('animationcomplete', function (e) {
-    if (IsAnimationCounterAnimation(e)) {
-      EndRoll();
-    }
-  });
-}
+function EvaluateOptions() {
+  const isAutobonus = document.getElementById('autobonus').checked;
+  game.optionsNextRoll.autoBonus = isAutobonus;
 
-function DeductFeeFromBalance(balance) {
-  document.getElementById('balance').innerHTML = balance - 1;
-}
-
-function HaveBalance(balance) {
-  return balance >= 1;
+  const isAutowin = document.getElementById('autowin').checked;
+  game.optionsNextRoll.autoWin = isAutowin;
 }
 
 function AttemptRoll() {
-  const isAutobonus = document.getElementById('autobonus').checked;
-  const isAutowin = document.getElementById('autowin').checked;
-  const balance = Number(document.getElementById('balance').innerHTML);
-  if (HaveBalance(balance)) {
-    DisablePlayButton();
-    DeductFeeFromBalance(balance);
-    Roll({
-      isAutobonus: isAutobonus,
-      isAutowin: isAutowin,
-    });
+  if (game.status === 'READY') {
+    EvaluateOptions();
+    if (HaveBalance()) {
+      DisablePlayButton();
+      DeductFeeFromBalance();
+      StatusFromReadyToRolling();
+    }
   }
 }
 
@@ -370,69 +393,30 @@ function AddPlayButtonEventListener() {
   });
 }
 
-function IsAnimationBonusAnimation(e) {
-  return e.detail.name === 'animation__rotatesideways';
-}
-
-function SetNoScattersToReels() {
-  const reels = [
-    document.getElementById('reel0'),
-    document.getElementById('reel1'),
-    document.getElementById('reel2'),
-  ];
-
-  reels.forEach((element, index) => {
-    let lineItem = 'Q';
-    if (index === 0) {
-      lineItem = 'T';
-    } else if (index === 1) {
-      lineItem = 'J';
-    }
-    for (var i = 0; i < 12; i++) {
-      element.getObject3D('mesh').children[i].material.map =
-        texturePool[lineItem];
-      element.getObject3D('mesh').children[i].material.map.name = lineItem;
-    }
-  });
-}
-
-function AddSetBonusStageAnimationEventListener() {
-  const reel1 = document.getElementById('reel1');
-  reel1.addEventListener('animationcomplete', function (e) {
-    if (IsAnimationBonusAnimation(e)) {
-      SetNoScattersToReels();
-      BonusRoll();
-      SetNormalStage();
-    }
-  });
-}
-
-function IsAnimationNormalStageAnimation(e) {
-  return e.detail.name === 'animation__movetofacing';
-}
-
-function AddSetNormalStageAnimationEventListener() {
-  const reel1 = document.getElementById('reel1');
-  reel1.addEventListener('animationcomplete', function (e) {
-    if (IsAnimationNormalStageAnimation(e)) {
-      isBonusOngoing = 0;
-      EnablePlayButton();
-    }
-  });
-}
-
-function AddEventListeners() {
-  AddLastReelAnimationEventListener();
-  AddWinCounterAnimationEventListener();
-  AddPlayButtonEventListener();
-  AddMenuButtonEventListener();
-  AddSetBonusStageAnimationEventListener();
-  AddSetNormalStageAnimationEventListener();
-}
-
 function AddMenuButtonEventListener() {
   const element = document.getElementById('menuButton');
   element.addEventListener('click', function () {
     ToggleMenu();
   });
+}
+
+function AddWinSplashAnimationsEventListener() {
+  const winSplash = document.getElementById('winSplash');
+  winSplash.addEventListener('animationcomplete', function (e) {
+    if (e.detail.name === 'animation__counter') {
+      AddWinToBalance();
+      if (game.status === 'UPCOMINGBONUS') {
+        StatusFromUpcomingBonusToBonus();
+      } else {
+        StatusFromStoppedToReady();
+      }
+    }
+  });
+}
+
+function AddEventListeners() {
+  AddLastReelAnimationsEventListener();
+  AddWinSplashAnimationsEventListener();
+  AddPlayButtonEventListener();
+  AddMenuButtonEventListener();
 }
