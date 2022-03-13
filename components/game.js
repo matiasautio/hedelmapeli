@@ -1,4 +1,5 @@
 let currentWin = 0;
+let isBonusOngoing = 0;
 
 const texturePool = {
   T: new THREE.TextureLoader().load('2D_assets/T.png'),
@@ -6,6 +7,7 @@ const texturePool = {
   Q: new THREE.TextureLoader().load('2D_assets/Q.png'),
   K: new THREE.TextureLoader().load('2D_assets/K.png'),
   W: new THREE.TextureLoader().load('2D_assets/W.png'),
+  S: new THREE.TextureLoader().load('2D_assets/S.png'),
 };
 
 function RandomKeyFrom(obj) {
@@ -125,6 +127,7 @@ function CheckIfWin() {
     winSplash.emit('startWinSplashCounter', null, false);
     winSplash.components.sound.playSound();
   } else {
+    CheckIfBonus();
     EnablePlayButton();
   }
 }
@@ -203,8 +206,10 @@ function ChangeHiddenFaceTextures({ element, willTurn, nextFaceTexture }) {
   }
 }
 
-function DrawNextLine(isAutowin) {
-  if (isAutowin) {
+function DrawNextLine({ isAutobonus: isAutobonus, isAutowin: isAutowin }) {
+  if (isAutobonus) {
+    return ['S', 'S', 'S'];
+  } else if (isAutowin) {
     const textureKey = RandomKeyFrom(texturePool);
     return [textureKey, textureKey, textureKey];
   } else {
@@ -216,8 +221,11 @@ function DrawNextLine(isAutowin) {
   }
 }
 
-function Roll(isAutowin) {
-  const nextLineShouldBe = DrawNextLine(isAutowin);
+function Roll({ isAutobonus: isAutobonus, isAutowin: isAutowin }) {
+  const nextLineShouldBe = DrawNextLine({
+    isAutobonus: isAutobonus,
+    isAutowin: isAutowin,
+  });
 
   let delay = 0;
 
@@ -268,8 +276,38 @@ function AddWinToBalance() {
   currentWin = 0;
 }
 
+function SetBonusStage() {
+  const reel0 = document.getElementById('reel0');
+  reel0.emit('startSetBonusStage', null, false);
+  const reel2 = document.getElementById('reel2');
+  reel2.emit('startSetBonusStage', null, false);
+  const reel1 = document.getElementById('reel1');
+  reel1.emit('startSetBonusStage', null, false);
+}
+
+function PlayBonus() {
+  console.log('Bonus is triggered!');
+  // Move reels 0 and 2 behind
+  // Move reel 1 to face player by side
+  SetBonusStage();
+  // SetNormalStage();
+}
+
+function CheckIfBonus() {
+  if (isBonusOngoing) {
+    return;
+  }
+  const currentLine = GetCurrentLine().join('');
+  console.log(currentLine);
+  if (currentLine === 'SSS') {
+    isBonusOngoing = 1;
+    PlayBonus();
+  }
+}
+
 function EndRoll() {
   AddWinToBalance();
+  CheckIfBonus();
   EnablePlayButton();
 }
 
@@ -291,12 +329,16 @@ function HaveBalance(balance) {
 }
 
 function AttemptRoll() {
+  const isAutobonus = document.getElementById('autobonus').checked;
   const isAutowin = document.getElementById('autowin').checked;
   const balance = Number(document.getElementById('balance').innerHTML);
   if (HaveBalance(balance)) {
     DisablePlayButton();
     DeductFeeFromBalance(balance);
-    Roll(isAutowin);
+    Roll({
+      isAutobonus: isAutobonus,
+      isAutowin: isAutowin,
+    });
   }
 }
 
