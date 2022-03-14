@@ -6,15 +6,27 @@ const game = {
   reelInfoById: {
     reel0: {
       now: { centerFaceIndex: 0, n: 12, hidden: [3, 4, 5, 6, 7, 8, 9] },
-      next: { centerFaceIndex: null, n: null, hidden: [null, null, null, null, null, null, null] },
+      next: {
+        centerFaceIndex: null,
+        n: null,
+        hidden: [null, null, null, null, null, null, null],
+      },
     },
     reel1: {
       now: { centerFaceIndex: 0, n: 12, hidden: [3, 4, 5, 6, 7, 8, 9] },
-      next: { centerFaceIndex: null, n: null, hidden: [null, null, null, null, null, null, null] },
+      next: {
+        centerFaceIndex: null,
+        n: null,
+        hidden: [null, null, null, null, null, null, null],
+      },
     },
     reel2: {
       now: { centerFaceIndex: 0, n: 12, hidden: [3, 4, 5, 6, 7, 8, 9] },
-      next: { centerFaceIndex: null, n: null, hidden: [null, null, null, null, null, null, null] },
+      next: {
+        centerFaceIndex: null,
+        n: null,
+        hidden: [null, null, null, null, null, null, null],
+      },
     },
   },
   round: 0,
@@ -46,15 +58,18 @@ AFRAME.registerComponent('reorderobjectcchildren', {
     this.el.addEventListener('model-loaded', () => {
       // Reorder objects children
       const obj = this.el.getObject3D('mesh');
-      const children = Array.from(obj.children);
-      children.sort((a, b) => a.name.localeCompare(b.name));
-      obj.children = children;
+      if (typeof obj !== 'undefined') {
+        // Because model-loaded more than once
+        const children = Array.from(obj.children);
+        children.sort((a, b) => a.name.localeCompare(b.name));
+        obj.children = children;
 
-      // Add initial textures & color
-      obj.children.forEach((face) => {
-        face.material.color = new THREE.Color('skyblue');
-        face.material.map = RandomPropertyFrom(texturePool);
-      });
+        // Add initial textures & color
+        obj.children.forEach((face) => {
+          face.material.color = new THREE.Color('skyblue');
+          face.material.map = RandomPropertyFrom(texturePool);
+        });
+      }
     });
   },
 });
@@ -136,7 +151,7 @@ function EvaluateWins() {
   game.pendingWins += max;
 
   if (game.pendingWins > 0) {
-    game.status = "PAYINGWINS";
+    game.status = 'PAYINGWINS';
     DisablePlayButton();
     const winSplash = document.getElementById('winSplash');
     winSplash.object3D.visible = true;
@@ -166,10 +181,11 @@ function GetDuration() {
 function StatusFromRollingToStopped() {
   game.status = 'STOPPED';
 
-  const ids = ["reel0", "reel1", "reel2"]
+  const ids = ['reel0', 'reel1', 'reel2'];
 
   for (id of ids) {
-    game.reelInfoById[id].now.centerFaceIndex = game.reelInfoById[id].next.centerFaceIndex;
+    game.reelInfoById[id].now.centerFaceIndex =
+      game.reelInfoById[id].next.centerFaceIndex;
     game.reelInfoById[id].now.n = game.reelInfoById[id].next.n;
 
     const nextHidden = game.reelInfoById[id].next.hidden;
@@ -189,7 +205,7 @@ function TurnReel({ element, turn, delay }) {
 
   const duration = GetDuration();
 
-  element.components.animation__normalroll.data.to = rotation_target+' 0 0';
+  element.components.animation__normalroll.data.to = rotation_target + ' 0 0';
   element.components.animation__normalroll.data.delay = delay;
   element.components.animation__normalroll.data.dur = duration;
 
@@ -211,7 +227,6 @@ function ChangeHiddenFaceTextures({ element, nextFaceTexture }) {
       texturePool[lineItem];
     element.getObject3D('mesh').children[face].material.map.name = lineItem;
   }
-
 }
 
 function DrawNextLine() {
@@ -249,13 +264,12 @@ function SetNextReelInfo(facesForReelsToTurn) {
     });
 
     for (let i = 0; i < nextHidden.length; i++) {
-      game.reelInfoById[id].next.hidden[i] = nextHidden[i]
+      game.reelInfoById[id].next.hidden[i] = nextHidden[i];
     }
   });
 }
 
 function StatusFromReadyToRolling() {
-
   game.status = 'ROLLINCOMING';
 
   const nextLineShouldBe = DrawNextLine();
