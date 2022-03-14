@@ -47,12 +47,6 @@ function RandomKeyFrom(obj) {
   return randomKey;
 }
 
-function RandomPropertyFrom(obj) {
-  const randomKey = RandomKeyFrom(obj);
-  const randomProperty = obj[randomKey];
-  return randomProperty;
-}
-
 AFRAME.registerComponent('reorderobjectcchildren', {
   init: function () {
     this.el.addEventListener('model-loaded', () => {
@@ -67,7 +61,8 @@ AFRAME.registerComponent('reorderobjectcchildren', {
         // Add initial textures & color
         obj.children.forEach((face) => {
           face.material.color = new THREE.Color('skyblue');
-          face.material.map = RandomPropertyFrom(texturePool);
+          const textureKey = RandomKeyFrom(texturePool);
+          face.material.map = texturePool[textureKey];
         });
       }
     });
