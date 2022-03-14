@@ -171,7 +171,11 @@ function StatusFromRollingToStopped() {
   for (id of ids) {
     game.reelInfoById[id].now.centerFaceIndex = game.reelInfoById[id].next.centerFaceIndex;
     game.reelInfoById[id].now.n = game.reelInfoById[id].next.n;
-    game.reelInfoById[id].now.hidden = game.reelInfoById[id].next.hidden;
+
+    const nextHidden = game.reelInfoById[id].next.hidden;
+    for (let i = 0; i < nextHidden.length; i++) {
+      game.reelInfoById[id].now.hidden[i] = nextHidden[i];
+    }
   }
 
   EvaluateWins();
@@ -247,7 +251,6 @@ function SetNextReelInfo(facesForReelsToTurn) {
     for (let i = 0; i < nextHidden.length; i++) {
       game.reelInfoById[id].next.hidden[i] = nextHidden[i]
     }
-
   });
 }
 
