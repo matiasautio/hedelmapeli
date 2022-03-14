@@ -1,22 +1,23 @@
 const game = {
-  status: 'READY', // READY, ROLLING, STOPPED, PAYINGWINS, UPCOMINGBONUS, BONUS
+  status: 'READY', // READY, ROLLINCOMING, ROLLONGOING, STOPPED, PAYINGWINS, UPCOMINGBONUS, BONUS
   optionsNextRoll: { autoWin: false, autoBonus: false },
   pendingWins: 0,
   balance: 5,
   reelInfoById: {
     reel0: {
       now: { centerFaceIndex: 0, n: 12, hidden: [3, 4, 5, 6, 7, 8, 9] },
-      next: { centerFaceIndex: 0, n: 0, hidden: [0, 0, 0, 0, 0, 0, 0] },
+      next: { centerFaceIndex: null, n: null, hidden: [null, null, null, null, null, null, null] },
     },
     reel1: {
       now: { centerFaceIndex: 0, n: 12, hidden: [3, 4, 5, 6, 7, 8, 9] },
-      next: { centerFaceIndex: 0, n: 0, hidden: [0, 0, 0, 0, 0, 0, 0] },
+      next: { centerFaceIndex: null, n: null, hidden: [null, null, null, null, null, null, null] },
     },
     reel2: {
       now: { centerFaceIndex: 0, n: 12, hidden: [3, 4, 5, 6, 7, 8, 9] },
-      next: { centerFaceIndex: 0, n: 0, hidden: [0, 0, 0, 0, 0, 0, 0] },
+      next: { centerFaceIndex: null, n: null, hidden: [null, null, null, null, null, null, null] },
     },
   },
+  round: 0,
 };
 
 const texturePool = {
@@ -184,18 +185,9 @@ function TurnReel({ element, turn, delay }) {
 
   const duration = GetDuration();
 
-  element.setAttribute(
-    'animation',
-    'property: rotation; to: ' +
-      rotation_target +
-      ' 0 0; \
-    delay: ' +
-      delay +
-      '; \
-    dur: ' +
-      duration +
-      ';'
-  );
+  element.components.animation__normalroll.data.to = rotation_target+' 0 0';
+  element.components.animation__normalroll.data.delay = delay;
+  element.components.animation__normalroll.data.dur = duration;
 
   element.emit('startNormalRoll', null, false);
 
@@ -206,9 +198,6 @@ function ChangeHiddenFaceTextures({ element, nextFaceTexture }) {
   const hidden = game.reelInfoById[element.id].now.hidden;
   const nextFacing = game.reelInfoById[element.id].next.centerFaceIndex;
 
-  console.log(game.reelInfoById[element.id].now.centerFaceIndex)
-  console.log(game.reelInfoById[element.id].now.hidden)
-
   for (const face of hidden) {
     let lineItem = RandomKeyFrom(texturePool);
     if (face === nextFacing) {
@@ -218,6 +207,7 @@ function ChangeHiddenFaceTextures({ element, nextFaceTexture }) {
       texturePool[lineItem];
     element.getObject3D('mesh').children[face].material.map.name = lineItem;
   }
+
 }
 
 function DrawNextLine() {
@@ -249,28 +239,34 @@ function SetNextReelInfo(facesForReelsToTurn) {
 
     const hidden = game.reelInfoById[id].now.hidden;
     const n = game.reelInfoById[id].now.n;
+
     const nextHidden = hidden.map(function (value) {
-      return (value + nextCenterFaceIndex) % n;
+      return (value + nudges) % n;
     });
 
-    game.reelInfoById[id].next.hidden = nextHidden;
+    for (let i = 0; i < nextHidden.length; i++) {
+      game.reelInfoById[id].next.hidden[i] = nextHidden[i]
+    }
+
   });
 }
 
 function StatusFromReadyToRolling() {
-  game.status = 'ROLLING';
+
+  game.status = 'ROLLINCOMING';
+
   const nextLineShouldBe = DrawNextLine();
+
+  const facesForReelsToTurn = [6, 6, 6];
+  SetNextReelInfo(facesForReelsToTurn);
+
+  const turnAnimationDelays = [0, 200, 400];
 
   const reels = [
     document.getElementById('reel0'),
     document.getElementById('reel1'),
     document.getElementById('reel2'),
   ];
-
-  const facesForReelsToTurn = [6, 6, 6];
-  SetNextReelInfo(facesForReelsToTurn);
-
-  const turnAnimationDelays = [0, 200, 400];
 
   reels.forEach((element, index) => {
     const facesToTurn = facesForReelsToTurn[index];
@@ -288,6 +284,8 @@ function StatusFromReadyToRolling() {
       turn: facesToTurn,
       delay: delay,
     });
+
+    game.status = 'ROLLONGOING';
   });
 }
 
@@ -300,11 +298,11 @@ function AddLastReelAnimationsEventListener() {
     } else if (e.detail.name === 'animation__movefront') {
       game.status = 'READY';
       EnablePlayButton();
-    } else {
+    } else if (e.detail.name === 'animation__normalroll') {
       StatusFromRollingToStopped();
       if (game.status === 'UPCOMINGBONUS') {
         StatusFromUpcomingBonusToBonus();
-      } else {
+      } else if (game.status === 'STOPPED') {
         StatusFromStoppedToReady();
       }
     }
