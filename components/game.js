@@ -306,7 +306,6 @@ function AddLastReelAnimationsEventListener() {
   lastReel.addEventListener('animationcomplete', function (e) {
     if (e.detail.name === 'animation__movebehind') {
       BonusRoll();
-      SetNormalStage();
     } else if (e.detail.name === 'animation__movefront') {
       game.status = 'READY';
       EnablePlayButton();
@@ -317,6 +316,15 @@ function AddLastReelAnimationsEventListener() {
       } else if (game.status === 'STOPPED') {
         StatusFromStoppedToReady();
       }
+    }
+  });
+}
+
+function AddReelSideAnimationsEventListener() {
+  const lastReel = document.getElementById('reelSide');
+  lastReel.addEventListener('animationcomplete', function (e) {
+    if (e.detail.name === 'animation__bonusspin') {
+      SetNormalStage();
     }
   });
 }
@@ -338,6 +346,18 @@ function SetBonusStage() {
 
 function BonusRoll() {
   console.log('Bonus rolling...');
+
+  const rounds = (360 + Math.floor(Math.random() * 360 * 3)) / 360;
+  const durationNoice = Math.floor(Math.random() * 10000);
+  const duration = rounds * 100000 + durationNoice;
+
+  const reelSide = document.getElementById('reelSide');
+  const currentRotation = reelSide.object3D.rotation.x;
+  const rotateTo = currentRotation + 360 * rounds;
+
+  reelSide.components.animation__bonusspin.data.to = rotateTo + ' 0 0';
+  reelSide.components.animation__bonusspin.data.dur = duration;
+  reelSide.emit('startBonusSpin', null, false);
 }
 
 function SetNormalStage() {
@@ -347,6 +367,9 @@ function SetNormalStage() {
   reel1.emit('startSetNormalStage', null, false);
   const reel2 = document.getElementById('reel2');
   reel2.emit('startSetNormalStage', null, false);
+
+  const reelSide = document.getElementById('reelSide');
+  reelSide.emit('startSetNormalStage', null, false);
 }
 
 function StatusFromStoppedToReady() {
@@ -429,4 +452,5 @@ function AddEventListeners() {
   AddWinSplashAnimationsEventListener();
   AddPlayButtonEventListener();
   AddMenuButtonEventListener();
+  AddReelSideAnimationsEventListener();
 }

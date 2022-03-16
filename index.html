@@ -10,8 +10,8 @@
     <a-scene inspector="" keyboard-shortcuts="" screenshot="" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" style="z-index: 0; position: absolute;">
         <a-assets>
             <a-asset-item id="reel" src="./3D_assets/reel_separated_faces.glb"></a-asset-item>
-            <a-asset-item id="reelSide" src="./3D_assets/reel_side.glb"></a-asset-item>
-            <a-asset-item id="bonusPointer" src="./3D_assets/bonus_pointer.glb"></a-asset-item>
+            <a-asset-item id="reelSideAsset" src="./3D_assets/reel_side.glb"></a-asset-item>
+            <a-asset-item id="bonusPointerAsset" src="./3D_assets/bonus_pointer.glb"></a-asset-item>
             <audio id="coin" src="sounds/smw_coin.wav" preload="auto"></audio>
             <audio id="spin" src="sounds/smw_stomp.wav" preload="auto"></audio>
         </a-assets>
@@ -25,8 +25,10 @@
             animation__normalroll="property: rotation; to: 0 0 0; easing: linear; loop: false; autoplay: false; startEvents: startNormalRoll;"
             animation__rotatesideways="property: rotation.y; to: 90; startEvents: startSetBonusStage"
             animation__movetofacing="property: rotation.y; to: 0; startEvents: startSetNormalStage" reorderobjectcchildren>
-            <a-entity id="reelSide" gltf-model="#reelSide" position="0 0 0" rotation="0 0 0" sound="src: #spin; poolSize: 3;" animation="property: rotation; to: 0 0 0; easing: linear; loop: false"></a-entity>
-            <a-entity id="bonusPointer" gltf-model="#bonusPointer" position="0 0.1 0" rotation="0 0 0"></a-entity>
+            <a-entity id="reelSide" gltf-model="#reelSideAsset" position="0 0 0" rotation="0 0 0" sound="src: #spin; poolSize: 3;"
+                animation__bonusspin="property: rotation; to: 1 0 0; easing: easeOutExpo; dur: 2000; startEvents: startBonusSpin"
+                animation__tonormal="property: rotation; to: 0 0 0; startEvents: startSetNormalStage"></a-entity>
+            <a-entity id="bonusPointer" gltf-model="#bonusPointerAsset" position="0 0.1 0" rotation="0 0 0"></a-entity>
         </a-entity>
         <a-entity id="reel2" gltf-model="#reel" position="0.3 1.5 -3" rotation="0 0 0" sound="src: #spin; poolSize: 3;"
             animation__normalroll="property: rotation; to: 0 0 0; easing: linear; loop: false; autoplay: false; startEvents: startNormalRoll;"
@@ -52,7 +54,7 @@
             <div><input type="checkbox" id="autowin" autocomplete="off" /> <label for="autowin">Sure win</label></div>
             <div><input type="checkbox" id="fastspin" autocomplete="off" /> <label for="fastspin">Faster spins</label></div>
             <div><input type="checkbox" id="grayscale" autocomplete="off" onclick=toggleGreyscaleFilter() /> <label for="grayscale">No colors</label></div>
-            <div><input type="checkbox" id="autobonus" autocomplete="off" /> <label for="autobonus">Sure Bonus</label></div>
+            <div><input type="checkbox" id="autobonus" autocomplete="off" checked /> <label for="autobonus">Sure Bonus</label></div>
         </div>
     </div>
 </body>
